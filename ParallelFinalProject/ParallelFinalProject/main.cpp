@@ -1,16 +1,17 @@
 #include <iostream>
 #include "DATA.h"
+#include "board.h"
 using namespace std;
 
 
 
 int main()
 {
-	int side = PLAYER_SIDE;
 
 	char s[256];
-	int tread_num = 0;
-	bool game = true;
+	int thread_num = 0;
+	AUTO = false;
+	side = PLAYER_SIDE;
 	while (true) {
 
 		if (side == COMPUTER_SIDE || AUTO) {
@@ -29,14 +30,15 @@ int main()
 
 		else {
 			printf("command : ");
+			cin >> s;
 
-			if (scanf("%s", s) == EOF)
-				return 0;
 			if (!strcmp(s, "new")) {
+				cout << "create a new game\n";
 				board_init();
+				board_print();
 			}
 			if (!strcmp(s, "t")) {
-				scanf("%d", &thread_num)
+				cin >> thread_num;
 			}
 			if (!strcmp(s, "s")) {
 				thread_num = 1;
@@ -49,15 +51,21 @@ int main()
 				printf("	the first two parameter decide where the piece come FROM\n");
 				printf("	the last two parameter decide where the piece go TO\n");
 			}
-			move = parse_move(s);
+			if (!strcmp(s, "p")) {
+				board_print();
+			}
+			if (!strcmp(s, "q")) {
+				return 0;
+			}
+			//move = parse_move(s);
 
-			if (move == -1 || !make_move(move)) {
-				printf("illegal move\n");
-			}
-			else {
-				printf_result();
-				init();
-			}
+			//if (move == -1 || !make_move(move)) {
+			//	printf("illegal move\n");
+			//}
+			//else {
+			//	printf_result();
+			//	init();
+			//}
 
 		}
 

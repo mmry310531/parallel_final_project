@@ -141,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="..\search.c" />
     <ClCompile Include="board.cpp" />
+    <ClCompile Include="DATA.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="board.h" />
     <ClInclude Include="DATA.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,42 +1,39 @@
-#pragma once
+#ifndef DATA_H
+#define DATA_H
 
 #define PLAYER_SIDE 0
 #define COMPUTER_SIDE 1
-#define AUTO 2
+
 
 
 #define BLACK 1
-#define WHITE 2
+#define WHITE 0
 
 #define KING 1
 #define QUEEN 2
 #define BISHOP 3
 #define KNIGHT 4
 #define CASTLE 5
+#define PAWN 6
 
 #define BColor 0
 #define BPiece 1
 
-int board[2][64];
 
 
-int init_color[64] = {
-	 1,  1,  1,  1,  1,  1,  1,  1,
-	 1,  1,  1,  1,  1,  1,  1,  1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	-1, -1, -1, -1, -1, -1, -1, -1,
-	 2,  2,  2,  2,  2,  2,  2,  2,
-	 2,  2,  2,  2,  2,  2,  2,  2,
-};
 
-int init_piece[64] = {
-	5, 4, 3, 2, 1, 3, 4, 5, 
-	1, 1, 1, 1, 1, 1, 1, 1,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0, 0, 0, 0, 0, 0, 0,
-	5, 4, 3, 2, 1, 3, 4, 5,
-}
+// static
+extern int init_color[64];
+extern int init_piece[64];
+
+
+// dynamic
+extern int board[2][64];
+extern int side;
+extern int ply;
+extern int half_ply;
+
+extern bool AUTO;
+
+#endif \* DATA_H*\
+
