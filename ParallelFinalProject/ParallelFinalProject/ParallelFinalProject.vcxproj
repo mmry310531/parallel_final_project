@@ -139,14 +139,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\search.c" />
     <ClCompile Include="board.cpp" />
     <ClCompile Include="DATA.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="search.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="board.h" />
     <ClInclude Include="DATA.h" />
+    <ClInclude Include="Def.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\search.c">
-      <Filter>來源檔案</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
@@ -27,12 +24,18 @@
     <ClCompile Include="DATA.cpp">
       <Filter>來源檔案</Filter>
     </ClCompile>
+    <ClCompile Include="search.c">
+      <Filter>來源檔案</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DATA.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
     <ClInclude Include="board.h">
+      <Filter>標頭檔</Filter>
+    </ClInclude>
+    <ClInclude Include="Def.h">
       <Filter>標頭檔</Filter>
     </ClInclude>
   </ItemGroup>

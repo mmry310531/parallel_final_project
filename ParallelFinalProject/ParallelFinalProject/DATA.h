@@ -18,7 +18,10 @@
 
 #define BColor 0
 #define BPiece 1
+#define NONE -1
 
+#define A8 0
+#define H1 63
 
 
 

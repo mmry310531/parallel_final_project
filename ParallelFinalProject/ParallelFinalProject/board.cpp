@@ -1,5 +1,6 @@
 #include "DATA.h"
 #include "board.h"
+#include "Def.h"
 #include <iostream>
 using namespace std;
 
@@ -79,4 +80,76 @@ int board_print()
 		cout << "\n";
 	}
 	return 0;
+}
+
+MoveByte ReadMove(string s) {
+	MoveByte mb;
+	int from, to, piece, promote;
+	mb.from = mb.to = mb.piece = mb.promote = mb.legal = NONE;
+	if (s.length() < 4) {
+		cout << "Illegal Move\n";
+		return mb;
+	}
+	
+
+	if ((s[0] >= 'a' && s[0] <= 'h') &&
+		(s[1] >= '1' && s[1] <= '8') &&
+		(s[2] >= 'a' && s[2] <= 'h') &&
+		(s[3] >= '1' && s[3] <= '8'))
+	{
+		from = s[0] - 'a';
+		from += 8 * (8 - (s[1] - '0'));
+		to = s[2] - 'a';
+		to += 8 * (8 - (s[3] - '0'));
+
+		piece = board[BPiece][from];
+		promote = -1;
+		if (s.length() == 5) {
+			if (s[4] == 'k') {
+				promote = KING;
+			}
+			else if (s[4] == 'b') {
+				promote = BISHOP;
+			}
+			else if (s[4] == 'n') {
+				promote = KNIGHT;
+			}
+			else {
+				promote = 0;
+				// shouldn't be here
+			}
+		}
+
+		mb.from = from;
+		mb.to = to;
+		mb.piece = piece;
+		mb.promote = promote;
+		mb.legal = 1;
+		return mb;
+	}
+
+
+	else {
+		cout << "Illegal Move\n";
+		// read error
+		return mb;
+	}
+
+}
+
+bool makeMove(MoveByte moveByte)
+{
+
+	board[BPiece][moveByte.to] = moveByte.piece;
+	board[BColor][moveByte.to] = side;
+
+	board[BPiece][moveByte.from] = NONE;
+	board[BColor][moveByte.from] = NONE;
+
+	return true;
+}
+
+bool backMove()
+{
+	return true;
 }
