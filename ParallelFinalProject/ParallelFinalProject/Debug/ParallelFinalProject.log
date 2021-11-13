@@ -1,0 +1,109 @@
+﻿  main.c
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(8,12): error C2065: 'true': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(11,11): error C2065: 'side': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(11,28): error C2065: 'COMPUTER_SIDE': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(11,35): error C2065: 'AUTO': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(13,9): error C2065: 'move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(13,17): warning C4013: 'search' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(14,12): error C2065: 'move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(14,19): warning C4047: '==': 'int' 與 'void *' 間接取值的層級不同
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(18,9): warning C4013: 'init' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(22,8): warning C4013: 'make' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(22,13): error C2065: 'move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(30,14): warning C4013: 'strcmp' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(34,28): error C2065: 'thread_num': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(35,4): error C2143: 語法錯誤: 遺漏 ';' (在 '}' 之前)
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(37,16): error C2065: 'thread_num': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(47,9): error C2065: 'move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(47,21): warning C4013: 'parse_move' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(49,12): error C2065: 'move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(49,31): warning C4013: 'make_move' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(49,36): error C2065: 'move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(53,18): warning C4013: 'printf_result' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(28,8): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\main.c(34,5): error C4996: 'scanf': This function or variable may be unsafe. Consider using scanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  search.c
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(4,7): error C2065: 'BOOL': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(4,7): error C2146: 語法錯誤: 遺漏 ';' (在識別項 'c' 之前)
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(4,8): error C2065: 'c': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(4,11): error C2065: 'f': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(9,24): error C2065: 'quiesce_func': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(9,11): error C2100: 不合法的間接取值
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(9,25): error C2064: 詞彙不等於使用 347 引數的函式
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(9,3): warning C4033: 'search' 必須傳回值
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(12,9): error C2065: 'nodes': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(15,13): error C2065: 'nodes': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(15,36): warning C4013: 'timeout' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(18,11): error C2065: 'pv_length': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(18,15): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(18,15): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(18,22): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(24,10): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(24,17): warning C4013: 'reps' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(28,10): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(28,21): error C2065: 'MAX_PLY': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(29,21): error C2065: 'eval_func': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(29,11): error C2100: 不合法的間接取值
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(29,22): error C2064: 詞彙不等於使用 347 引數的函式
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(29,3): warning C4033: 'search' 必須傳回值
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(30,11): error C2065: 'hply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(30,25): error C2065: 'HIST_STACK': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(31,21): error C2065: 'eval_func': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(31,11): error C2100: 不合法的間接取值
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(31,22): error C2064: 詞彙不等於使用 347 引數的函式
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(31,3): warning C4033: 'search' 必須傳回值
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(34,4): error C2065: 'c': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(34,14): warning C4013: 'in_check' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(34,19): error C2065: 'side': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(35,7): error C2065: 'c': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(38,5): warning C4013: 'gen' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(40,15): error C2065: 'follow_pv': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(41,10): warning C4013: 'sort_pv' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(43,4): error C2065: 'f': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(43,11): error C2065: 'FALSE': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(46,21): error C2065: 'first_move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(46,25): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(46,25): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(46,42): error C2065: 'first_move': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(46,47): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(46,50): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(47,7): warning C4013: 'sort' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(48,16): warning C4013: 'makemove' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(48,24): error C2065: 'gen_dat': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(48,26): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(50,5): error C2065: 'f': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(50,11): error C2065: 'TRUE': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(52,11): warning C4013: 'takeback' 未定義; 假設 extern 傳回整數
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(53,18): error C2065: 'stop_search': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(60,11): error C2065: 'history': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(60,24): error C2065: 'gen_dat': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(60,26): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(60,50): error C2065: 'gen_dat': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(60,52): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(66,6): error C2065: 'pv': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(66,10): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(66,10): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(66,15): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(66,26): error C2065: 'gen_dat': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(66,28): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(67,17): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(67,35): error C2065: 'pv_length': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(67,40): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(67,43): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(68,7): error C2065: 'pv': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(68,11): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(68,11): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(68,20): error C2065: 'pv': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(68,25): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(68,28): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(69,13): error C2065: 'pv_length': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(69,17): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(69,17): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(69,30): error C2065: 'pv_length': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(69,35): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(69,38): error C2109: 註標必須使用在陣列或指標類型上
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(74,8): error C2065: 'f': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(75,8): error C2065: 'c': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(76,23): error C2065: 'ply': 未宣告的識別項
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\search.c(82,12): error C2065: 'fifty': 未宣告的識別項
+  正在產生程式碼...
