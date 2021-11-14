@@ -13,8 +13,10 @@ int main()
 	int thread_num = 0;
 	AUTO = false;
 	side = PLAYER_SIDE;
+	xside = COMPUTER_SIDE;
+	board_init();
 	while (true) {
-
+		generateMove();
 		if (side == COMPUTER_SIDE || AUTO) {
 			// time start;
 			//move = search();
@@ -38,13 +40,13 @@ int main()
 				board_init();
 				board_print();
 			}
-			if (!strcmp(s, "t")) {
+			else if (!strcmp(s, "t")) {
 				cin >> thread_num;
 			}
-			if (!strcmp(s, "s")) {
+			else if (!strcmp(s, "s")) {
 				thread_num = 1;
 			}
-			if (!strcmp(s, "help")) {
+			else if (!strcmp(s, "help")) {
 				printf("new : restart a new game\n");
 				printf("t ${number} : decide therad numbers\n");
 				printf("s : change to serial search\n");
@@ -55,20 +57,25 @@ int main()
 				printf("    example: A4A5 \n");
 				printf("             A7A8Q \n");
 			}
-			if (!strcmp(s, "p")) {
+			else if (!strcmp(s, "p")) {
 				board_print();
 			}
-			if (!strcmp(s, "q")) {
+			else if (!strcmp(s, "q")) {
 				return 0;
 			}
 			else {
 				move = ReadMove(s);
-				//cout << move.from << ", " << move.to << ", " << move.piece << ", " << move.promote << endl;
+				cout << convertIndex2Readible(move.from) << ", " << convertIndex2Readible(move.to) << endl;
+
 				if (move.legal == NONE) {
+					cout << "Illegal Move!\n";
 					continue;
 				}
 				else {
 					bool moveLegal = makeMove(move);
+
+					//side = COMPUTER_SIDE;
+					//xside = PLAYER_SIDE;
 				}
 			}
 			

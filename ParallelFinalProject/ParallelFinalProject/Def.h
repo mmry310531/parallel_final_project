@@ -1,6 +1,7 @@
 #pragma once
+#pragma warning
 
-typedef struct {
+typedef struct MoveByte{
 	int from;
 	int to;
 	int piece;
@@ -10,5 +11,11 @@ typedef struct {
 
 
 
+
+
+typedef struct MoveByte_set {
+	MoveByte movebyte;
+	int score;
+} MoveByte_set;
 
 
