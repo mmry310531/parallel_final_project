@@ -12,7 +12,7 @@ int half_ply;
 bool AUTO;
 
 int move_offset[8] = { -8, 8, -1, 1, -9, 9, -7, 7 };
-
+int knight_jump[8] = { 15, 17, -17, -15, 10, -6, 6, -10 };
 int init_color[64] = {
 	 1,  1,  1,  1,  1,  1,  1,  1,
 	 //1,  1,  1,  1,  1,  1,  1,  1,
@@ -39,3 +39,5 @@ int init_piece[64] = {
 };
 
 int NumSquaresToEdge[64][8] = { 0 };
+int NumSquareToKnight[8] = { 0 };
+int numSquareToKnight_index = 0;

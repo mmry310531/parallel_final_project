@@ -99,7 +99,7 @@ extern int init_color[64];
 extern int init_piece[64];
 
 extern int move_offset[8];
-
+extern int knight_jump[8];
 // dynamic
 extern int board[2][64];
 extern MoveByte_set gen_dat[4096];
@@ -114,5 +114,6 @@ extern bool AUTO;
 
 
 extern int NumSquaresToEdge[64][8];
-
+extern int NumSquareToKnight[8];
+extern int numSquareToKnight_index;
 

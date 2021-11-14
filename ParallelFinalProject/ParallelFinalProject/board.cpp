@@ -91,7 +91,7 @@ MoveByte ReadMove(string s) {
 	}
 
 
-	if ((s[0] >= 'a' && s[0] <= 'h') && (s[1] >= '1' && s[1] <= '8') && (s[2] >= 'a' && s[2] <= 'h') &&(s[3] >= '1' && s[3] <= '8'))
+	if ((s[0] >= 'a' && s[0] <= 'h') && (s[1] >= '1' && s[1] <= '8') && (s[2] >= 'a' && s[2] <= 'h') && (s[3] >= '1' && s[3] <= '8'))
 	{
 		from = s[0] - 'a';
 		from += 8 * (8 - (s[1] - '0'));
@@ -121,7 +121,7 @@ MoveByte ReadMove(string s) {
 			//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
 
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
-				
+
 				mb.from = from;
 				mb.to = to;
 				mb.piece = piece;
@@ -170,7 +170,7 @@ void generateMove()
 	PreComputeMove();
 	for (int square = 0; square < 64; ++square) {
 		if (board[BColor][square] == side) {
-			// hangle queen | rook | bishop
+			// handle queen | rook | bishop
 			if (board[BPiece][square] == QUEEN || board[BPiece][square] == ROOK || board[BPiece][square] == BISHOP) {
 				int start_n = 0;
 				int end_n = 8;
@@ -181,36 +181,83 @@ void generateMove()
 				for (int direction = start_n; direction < end_n; ++direction) {
 					//cout << "num " << NumSquaresToEdge[square][direction] << endl;
 					for (int n = 0; n < NumSquaresToEdge[square][direction]; ++n) {
-							int targetSquare = square + move_offset[direction] * (n+1);
-							
-							if (board[BColor][targetSquare] == side) {
-								break;
-							}
+						int targetSquare = square + move_offset[direction] * (n + 1);
 
-							MoveByte_set *g =  &gen_dat[first_move[ply]++];
-							g->movebyte.from = square;
-							g->movebyte.to = targetSquare;
+						if (board[BColor][targetSquare] == side) {
+							break;
+						}
+
+						MoveByte_set* g = &gen_dat[first_move[ply]++];
+						g->movebyte.from = square;
+						g->movebyte.to = targetSquare;
+						g->movebyte.piece = NONE;
+						g->movebyte.promote = NONE;
+						g->movebyte.legal = 0;
+						g->score = 0;
+
+						//cout << board[BPiece][square] << "  , " << convertIndex2Readible(targetSquare) << endl;
+
+						if (board[BColor][targetSquare] == xside) {
+							g->score = 1000000 + (board[BPiece][targetSquare] * 10) - board[BPiece][square];
+							break;
+						}
+
+
+					}
+				}
+			}
+
+			// handle Knight
+			if (board[BPiece][square] == KNIGHT) {
+				for (int i = 0; i < 8; i++) {
+					int knightSquare = square + knight_jump[i];
+					if (knightSquare >= 0 && knightSquare < 64) {
+						int knight_col = COL(knightSquare);
+						int knight_row = ROW(knightSquare);
+
+						int rX = std::abs(COL(square) - knight_col);
+						int rY = std::abs(ROW(square) - knight_row);
+						bool check_in_board = false;
+						if (rX > rY) {
+							if (rX == 2) {
+								check_in_board = true;
+							}
+						}
+						else {
+							if (rY == 2) {
+								check_in_board = true;
+							}
+						}
+						if (check_in_board) {
+							MoveByte_set* g = &gen_dat[first_move[ply]++];
+							g->movebyte.to = knightSquare;
 							g->movebyte.piece = NONE;
 							g->movebyte.promote = NONE;
 							g->movebyte.legal = 0;
 							g->score = 0;
 
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(targetSquare) << endl;
+							cout << board[BPiece][square] << "  , " << convertIndex2Readible(knightSquare) << endl;
 
-							if (board[BColor][targetSquare] == xside) {
-								g->score = 1000000 + (board[BPiece][targetSquare] * 10) - board[BPiece][square];
-								break;
+							if (board[BColor][knightSquare] == xside) {
+								g->score = 1000000 + (board[BPiece][knightSquare] * 10) - board[BPiece][square];
 							}
-							
-						
+						}
+
 					}
 				}
 			}
+
+			// handle king
+			// TODO
+			
+			// handle pawn
+			//TODO
 		}
 	}
-
-
 }
+
+
+
 
 bool checkLegalMove(MoveByte movebyte) {
 
@@ -237,9 +284,11 @@ void PreComputeMove() {
 			int numNorth = file;
 			int numSouth = 7 - file;
 			int numWest = rank;
-			int numEast = 7 -rank;
+			int numEast = 7 - rank;
 
 			int square = file * 8 + rank;
+			int col = COL(square);
+			int row = ROW(square);
 			NumSquaresToEdge[square][0] = numNorth;
 			NumSquaresToEdge[square][1] = numSouth;
 			NumSquaresToEdge[square][2] = numWest;
@@ -248,13 +297,16 @@ void PreComputeMove() {
 			NumSquaresToEdge[square][5] = (numSouth < numEast) ? numSouth : numEast;
 			NumSquaresToEdge[square][6] = (numNorth < numEast) ? numNorth : numEast;
 			NumSquaresToEdge[square][7] = (numSouth < numWest) ? numSouth : numWest;
+
+
 		}
+
 	}
 
 }
 
 // for debug
-string convertIndex2Readible(int square) 
+string convertIndex2Readible(int square)
 {
 	string square_s = "";
 	int col = COL(square);
