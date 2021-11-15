@@ -85,7 +85,8 @@ int board_print()
 MoveByte ReadMove(string s) {
 	MoveByte mb;
 	int from, to, piece, promote;
-	mb.from = mb.to = mb.piece = mb.promote = mb.legal = NONE;
+	mb.from = mb.to = mb.promote =  NONE; mb.legal = false;
+
 	if (s.length() < 4) {
 		return mb;
 	}
@@ -97,12 +98,12 @@ MoveByte ReadMove(string s) {
 		from += 8 * (8 - (s[1] - '0'));
 		to = s[2] - 'a';
 		to += 8 * (8 - (s[3] - '0'));
-
-		piece = board[BPiece][from];
 		promote = -1;
+		//cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		piece = board[BPiece][from];
 		if (s.length() == 5) {
-			if (s[4] == 'k') {
-				promote = KING;
+			if (s[4] == 'r') {
+				promote = ROOK;
 			}
 			else if (s[4] == 'b') {
 				promote = BISHOP;
@@ -110,31 +111,27 @@ MoveByte ReadMove(string s) {
 			else if (s[4] == 'n') {
 				promote = KNIGHT;
 			}
-			else {
-				promote = 0;
+			else{
+				promote = QUEEN;
 				// shouldn't be here
 			}
 		}
 
-		cout << "first Move Num " << first_move[1] << endl;
+		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
 			//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
-
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
 				mb.to = to;
-				mb.piece = piece;
 				mb.promote = promote;
 				mb.legal = 1;
 				return mb;
 			}
 		}
 	}
-
-
 	return mb;
-
+	
 }
 
 bool makeMove(MoveByte moveByte)
@@ -153,7 +150,7 @@ bool makeMove(MoveByte moveByte)
 		return false;
 	}
 
-	board[BPiece][moveByte.to] = moveByte.piece;
+	board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
 	board[BColor][moveByte.to] = side;
 
 	board[BPiece][moveByte.from] = NONE;
@@ -166,6 +163,7 @@ bool makeMove(MoveByte moveByte)
 
 void generateMove()
 {
+
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
 	for (int square = 0; square < 64; ++square) {
@@ -186,20 +184,14 @@ void generateMove()
 						if (board[BColor][targetSquare] == side) {
 							break;
 						}
-
-						MoveByte_set* g = &gen_dat[first_move[ply]++];
-						g->movebyte.from = square;
-						g->movebyte.to = targetSquare;
-						g->movebyte.piece = NONE;
-						g->movebyte.promote = NONE;
-						g->movebyte.legal = 0;
-						g->score = 0;
-
 						//cout << board[BPiece][square] << "  , " << convertIndex2Readible(targetSquare) << endl;
 
 						if (board[BColor][targetSquare] == xside) {
-							g->score = 1000000 + (board[BPiece][targetSquare] * 10) - board[BPiece][square];
+							push_moveable_piece(square, targetSquare, NONE, NONE, true, false, false, false);
 							break;
+						}
+						else {
+							push_moveable_piece(square, targetSquare, NONE, NONE, false, false, false, false);
 						}
 
 
@@ -217,29 +209,15 @@ void generateMove()
 
 						int rX = std::abs(COL(square) - knight_col);
 						int rY = std::abs(ROW(square) - knight_row);
-						bool check_in_board = false;
-						if (rX > rY) {
-							if (rX == 2) {
-								check_in_board = true;
-							}
-						}
-						else {
-							if (rY == 2) {
-								check_in_board = true;
-							}
-						}
-						if (check_in_board) {
-							MoveByte_set* g = &gen_dat[first_move[ply]++];
-							g->movebyte.to = knightSquare;
-							g->movebyte.piece = NONE;
-							g->movebyte.promote = NONE;
-							g->movebyte.legal = 0;
-							g->score = 0;
-
-							cout << board[BPiece][square] << "  , " << convertIndex2Readible(knightSquare) << endl;
-
+						if ((rX + rY) == 3) {
+							if (board[BColor][knightSquare] == side)
+								continue;
+							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(knightSquare) << endl;
 							if (board[BColor][knightSquare] == xside) {
-								g->score = 1000000 + (board[BPiece][knightSquare] * 10) - board[BPiece][square];
+								push_moveable_piece(square, knightSquare, false, false, true, false, false, false);
+							}
+							else {
+								push_moveable_piece(square, knightSquare, false, false, false, false, false, false);
 							}
 						}
 
@@ -249,11 +227,79 @@ void generateMove()
 
 			// handle king
 			// TODO
-			
+
 			// handle pawn
-			//TODO
+
+			if (board[BPiece][square] == PAWN) {
+				if (side == WHITE) {
+					if (COL(square) != 0 && board[BColor][square - 9] == BLACK) {
+						push_moveable_piece(square, (square - 9), NONE, NONE, true, false, true, false);
+					}
+					if (COL(square) != 7 && board[BColor][square - 7] == BLACK) {
+						push_moveable_piece(square, (square - 7), NONE, NONE, true, false, true, false);
+					}
+
+					if (board[BColor][square - 8] == NONE) {
+						push_moveable_piece(square, (square - 8), NONE, NONE, false, false, true, false);
+						if (board[BPiece][square - 16] && square >= 48) {
+							push_moveable_piece(square, (square - 16), NONE, NONE, false, false, true, true);
+						}
+					}
+
+				}
+				else {
+					if (COL(square) != 0 && board[BColor][square + 7] == WHITE) {
+						push_moveable_piece(square, (square + 7), NONE, NONE, true, false, true, false);
+					}
+					if (COL(square) != 7 && board[BColor][square + 9] == WHITE) {
+						push_moveable_piece(square, (square + 9), NONE, NONE, true, false, true, false);
+					}
+
+					if (board[BColor][square + 8] == NONE) {
+						push_moveable_piece(square, (square + 8), NONE, NONE, false, false, true, false);
+						if (board[BPiece][square + 16] && square <= 15) {
+							push_moveable_piece(square, (square + 16), NONE, NONE, false, false, true, true);
+						}
+					}
+
+				}
+
+			}
+
 		}
 	}
+}
+//	typedef struct MoveByte{
+//	int from;
+//	int to;
+//	int piece;
+//	int promote;
+// 0 is can castle ; 1 is left ; 2 is right ; -1 can't castle
+//	int castle;
+//	bool capture;
+//	bool en_capture;
+//	bool IsPromote;
+//	int legal;
+//} MoveByte;
+//
+void push_moveable_piece(int from, int to, int promote, int castle, bool capture, bool en_capture, bool pawn, bool pawn2) {
+
+	// white pawn move to promote
+	if (to < 8 && pawn) {
+
+	}
+	// black pawn move to promote
+	if (to >= 56 && pawn) {
+
+	}
+
+	MoveByte_set* g = &gen_dat[first_move[ply+1]++];
+	g->movebyte.from = from;
+	g->movebyte.to = to;
+	g->movebyte.promote = NONE;
+	g->movebyte.legal = true;
+	g->score = 0;
+	g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
 }
 
 

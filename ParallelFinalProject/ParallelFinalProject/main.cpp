@@ -15,8 +15,9 @@ int main()
 	side = PLAYER_SIDE;
 	xside = COMPUTER_SIDE;
 	board_init();
+	generateMove();
 	while (true) {
-		generateMove();
+		
 		if (side == COMPUTER_SIDE || AUTO) {
 			// time start;
 			//move = search();
@@ -66,14 +67,14 @@ int main()
 			else {
 				move = ReadMove(s);
 				cout << convertIndex2Readible(move.from) << ", " << convertIndex2Readible(move.to) << endl;
-
-				if (move.legal == NONE) {
+				cout << move.legal << endl;
+				if (!move.legal) {
 					cout << "Illegal Move!\n";
 					continue;
 				}
 				else {
 					bool moveLegal = makeMove(move);
-
+					generateMove();
 					//side = COMPUTER_SIDE;
 					//xside = PLAYER_SIDE;
 				}

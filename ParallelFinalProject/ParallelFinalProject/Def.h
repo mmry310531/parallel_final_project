@@ -1,12 +1,25 @@
 #pragma once
 #pragma warning
 
+
+// 1	capture
+// 2	castle
+// 4	en passant capture
+// 8	pushing a pawn 2 squares
+// 16	pawn move
+// 32	promote
+
 typedef struct MoveByte{
 	int from;
 	int to;
-	int piece;
 	int promote;
-	int legal;
+	int castle;
+	bool pawn;
+	bool pawn2;
+	bool capture;
+	bool en_capture;
+	// 0 is can castle ; 1 is left ; 2 is right ; -1 can't castle
+	bool legal;
 } MoveByte;
 
 
