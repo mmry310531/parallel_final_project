@@ -14,6 +14,7 @@ int board_init()
 	side = WHITE;
 	ply = 0;
 	half_ply = 0;
+	castle |= char(15); // four castle ways
 
 	return 0;
 }
@@ -56,10 +57,10 @@ int board_print()
 			}
 			else if (board[BPiece][8 * i + j] == ROOK) {
 				if (board[BColor][8 * i + j] == WHITE) {
-					cout << "C";
+					cout << "R";
 				}
 				else {
-					cout << "c";
+					cout << "r";
 				}
 			}
 			else if (board[BPiece][8 * i + j] == PAWN) {
@@ -119,7 +120,7 @@ MoveByte ReadMove(string s) {
 
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
-			//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+			cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
@@ -136,6 +137,8 @@ MoveByte ReadMove(string s) {
 
 bool makeMove(MoveByte moveByte)
 {
+	int from = moveByte.from;
+	int to = moveByte.to;
 
 	bool Pass = false;
 	//int piece = board[BPiece][moveByte.from];
@@ -150,13 +153,54 @@ bool makeMove(MoveByte moveByte)
 		return false;
 	}
 
+
+
+	if (board[BPiece][from] == ROOK) {
+		if (from == H1) {
+			cout << "hello" << endl;
+			castle &= char(14); // 1110
+		}
+		else if (from == A1) {
+			castle &= char(13); // 1101
+		}
+		else if (from == H8) {
+			castle &= char(11); // 1011
+		}
+		else if (from == A8) {
+			castle &= char(7); // 0111
+		}
+	}
+	else if (board[BPiece][from] == KING) {
+
+		if (from == E1) {
+			if (moveByte.castle == 1) {
+				board[BPiece][H1] = NONE;
+				board[BPiece][F1] == ROOK;
+			}
+			else if (moveByte.castle == 2) {
+				board[BPiece][A1] = NONE;
+				board[BPiece][D1] == ROOK;
+			}
+			castle = castle & 12;
+		}
+		else if (from == E8) {
+			if (moveByte.castle == 4) {
+				board[BPiece][H8] = NONE;
+				board[BPiece][F8] == ROOK;
+			}
+			else if (moveByte.castle == 8) {
+				board[BPiece][A8] = NONE;
+				board[BPiece][D8] == ROOK;
+			}
+			castle = castle & 3;
+		}
+	}
+
 	board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
 	board[BColor][moveByte.to] = side;
 
 	board[BPiece][moveByte.from] = NONE;
 	board[BColor][moveByte.from] = NONE;
-
-
 
 	return true;
 }
@@ -226,6 +270,66 @@ void generateMove()
 			}
 
 			// handle king
+			if (board[BPiece][square] == KING) {
+				for (int i = 0; i < 8; ++i) {
+					int TargetSquare = square + move_offset[i];
+					if (TargetSquare >= 0 && TargetSquare < 64 && board[BColor][TargetSquare] != side) {
+						if (board[BColor][TargetSquare] == xside) {
+							push_moveable_piece(square, TargetSquare, false, false, true, false, false, false);
+						}
+						else {
+							push_moveable_piece(square, TargetSquare, false, false, false, false, false, false);
+						}
+						//cout << "King" << convertIndex2Readible(square) << ", " << convertIndex2Readible(TargetSquare) << endl;
+					}
+				}
+
+				// handle castle
+				if (side == WHITE) {
+					// right
+					if (castle & char(1)) {
+						//if(attack ( F1, G1) continue
+						//else
+						cout << "check" << endl;
+						cout << (castle+'0') << endl;
+						if (board[BColor][F1] == NONE && board[BColor][G1] == NONE) {
+							push_moveable_piece(square, G1, false, 1, false, false, false, false);
+							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G1) << endl;
+						}
+					}
+					// left
+					if (castle & char(2)) {
+						//if(attack ( C1, D1) continue
+						//else
+						if (board[BColor][C1] == NONE && board[BColor][D1] == NONE) {
+							push_moveable_piece(square, C1, false, 2, false, false, false, false);
+							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(C1) << endl;
+						}
+					}
+				}
+				else {
+					// right
+					if (castle & 4) {
+						//if(attack ( F7, G7) continue
+						//else
+						if (board[BColor][F7] == NONE && board[BColor][G7] == NONE) {
+							push_moveable_piece(square, G7, false, 4, false, false, false, false);
+							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G7) << endl;
+						}
+					}
+					// left
+					if (castle & 8) {
+
+						//if(attack ( C7, D7) continue
+						//else
+						if (board[BColor][C7] == NONE && board[BColor][D7] == NONE) {
+							push_moveable_piece(square, C7, false, 8, false, false, false, false);
+							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(C7) << endl;
+						}
+					}
+				}
+			}
+
 			// TODO
 
 			// handle pawn
@@ -296,6 +400,7 @@ void push_moveable_piece(int from, int to, int promote, int castle, bool capture
 	MoveByte_set* g = &gen_dat[first_move[ply+1]++];
 	g->movebyte.from = from;
 	g->movebyte.to = to;
+	g->movebyte.castle = castle;
 	g->movebyte.promote = NONE;
 	g->movebyte.legal = true;
 	g->score = 0;

@@ -108,6 +108,7 @@ extern int side;
 extern int xside;
 extern int ply;
 extern int half_ply;
+extern char castle;
 
 extern bool AUTO;
 
