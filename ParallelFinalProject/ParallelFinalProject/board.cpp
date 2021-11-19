@@ -7,64 +7,71 @@ using namespace std;
 
 int board_init()
 {
+	side = WHITE;
+	ply = 0;
+	hply = 0;
+	castle |= char(15); // four castle ways
+
 	for (int i = 0; i < 64; ++i) {
 		board[BColor][i] = init_color[i];
 		board[BPiece][i] = init_piece[i];
+		
 	}
-	side = WHITE;
-	ply = 0;
-	half_ply = 0;
-	castle |= char(15); // four castle ways
-
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 64; j++) {
+			history[hply].board[i][j] = board[i][j];
+		}
+	}
+	hply++;
 	return 0;
 }
 
-int board_print()
+int board_print(int board_[2][64])
 {
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
-			if (board[BPiece][8 * i + j] == KING) {
-				if (board[BColor][8 * i + j] == WHITE) {
+			if (board_[BPiece][8 * i + j] == KING) {
+				if (board_[BColor][8 * i + j] == WHITE) {
 					cout << "K";
 				}
 				else {
 					cout << "k";
 				}
 			}
-			else if (board[BPiece][8 * i + j] == QUEEN) {
-				if (board[BColor][8 * i + j] == WHITE) {
+			else if (board_[BPiece][8 * i + j] == QUEEN) {
+				if (board_[BColor][8 * i + j] == WHITE) {
 					cout << "Q";
 				}
 				else {
 					cout << "q";
 				}
 			}
-			else if (board[BPiece][8 * i + j] == BISHOP) {
-				if (board[BColor][8 * i + j] == 0) {
+			else if (board_[BPiece][8 * i + j] == BISHOP) {
+				if (board_[BColor][8 * i + j] == 0) {
 					cout << "B";
 				}
 				else {
 					cout << "b";
 				}
 			}
-			else if (board[BPiece][8 * i + j] == KNIGHT) {
-				if (board[BColor][8 * i + j] == WHITE) {
+			else if (board_[BPiece][8 * i + j] == KNIGHT) {
+				if (board_[BColor][8 * i + j] == WHITE) {
 					cout << "N";
 				}
 				else {
 					cout << "n";
 				}
 			}
-			else if (board[BPiece][8 * i + j] == ROOK) {
-				if (board[BColor][8 * i + j] == WHITE) {
+			else if (board_[BPiece][8 * i + j] == ROOK) {
+				if (board_[BColor][8 * i + j] == WHITE) {
 					cout << "R";
 				}
 				else {
 					cout << "r";
 				}
 			}
-			else if (board[BPiece][8 * i + j] == PAWN) {
-				if (board[BColor][8 * i + j] == WHITE) {
+			else if (board_[BPiece][8 * i + j] == PAWN) {
+				if (board_[BColor][8 * i + j] == WHITE) {
 					cout << "P";
 				}
 				else {
@@ -120,12 +127,14 @@ MoveByte ReadMove(string s) {
 
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
-			cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+			
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
 				mb.to = to;
 				mb.promote = promote;
+				mb.castle = gen_dat[i].movebyte.castle;
+				mb.en_capture = gen_dat[i].movebyte.en_capture;
 				mb.legal = 1;
 				return mb;
 			}
@@ -144,20 +153,8 @@ bool makeMove(MoveByte moveByte)
 	//int piece = board[BPiece][moveByte.from];
 	int color = board[BColor][moveByte.from];
 
-	if (color == side) {
-		if (!checkLegalMove(moveByte)) {
-			return false;
-		}
-	}
-	else {
-		return false;
-	}
-
-
-
 	if (board[BPiece][from] == ROOK) {
 		if (from == H1) {
-			cout << "hello" << endl;
 			castle &= char(14); // 1110
 		}
 		else if (from == A1) {
@@ -174,40 +171,60 @@ bool makeMove(MoveByte moveByte)
 
 		if (from == E1) {
 			if (moveByte.castle == 1) {
+				board[BPiece][F1] = ROOK;
 				board[BPiece][H1] = NONE;
-				board[BPiece][F1] == ROOK;
+				board[BColor][H1] = NONE;
+				board[BColor][F1] = side;
 			}
 			else if (moveByte.castle == 2) {
 				board[BPiece][A1] = NONE;
-				board[BPiece][D1] == ROOK;
+				board[BPiece][D1] = ROOK;
+				board[BColor][A1] = NONE;
+				board[BColor][D1] = side;
 			}
-			castle = castle & 12;
+			castle = castle & 12;  // 1100
 		}
 		else if (from == E8) {
 			if (moveByte.castle == 4) {
 				board[BPiece][H8] = NONE;
-				board[BPiece][F8] == ROOK;
+				board[BPiece][F8] = ROOK;
+				board[BColor][H8] = NONE;
+				board[BColor][F8] = side;
 			}
 			else if (moveByte.castle == 8) {
 				board[BPiece][A8] = NONE;
-				board[BPiece][D8] == ROOK;
+				board[BPiece][D8] = ROOK;
+				board[BColor][A8] = NONE;
+				board[BColor][D8] = side;
 			}
-			castle = castle & 3;
+			castle = castle & 3; // 0011
 		}
 	}
 
-	board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
-	board[BColor][moveByte.to] = side;
+		board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
+		board[BColor][moveByte.to] = side;
 
-	board[BPiece][moveByte.from] = NONE;
-	board[BColor][moveByte.from] = NONE;
+		board[BPiece][moveByte.from] = NONE;
+		board[BColor][moveByte.from] = NONE;
+	
+
+	// backup history
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 64; j++) {
+			history[hply].board[i][j] = board[i][j];
+		}
+	}
+	history[hply].castle = castle;
+
+	hply++;
+	ply++;
 
 	return true;
 }
 
 void generateMove()
 {
-
+	board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
 	for (int square = 0; square < 64; ++square) {
@@ -290,8 +307,6 @@ void generateMove()
 					if (castle & char(1)) {
 						//if(attack ( F1, G1) continue
 						//else
-						cout << "check" << endl;
-						cout << (castle+'0') << endl;
 						if (board[BColor][F1] == NONE && board[BColor][G1] == NONE) {
 							push_moveable_piece(square, G1, false, 1, false, false, false, false);
 							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G1) << endl;
@@ -373,19 +388,7 @@ void generateMove()
 		}
 	}
 }
-//	typedef struct MoveByte{
-//	int from;
-//	int to;
-//	int piece;
-//	int promote;
-// 0 is can castle ; 1 is left ; 2 is right ; -1 can't castle
-//	int castle;
-//	bool capture;
-//	bool en_capture;
-//	bool IsPromote;
-//	int legal;
-//} MoveByte;
-//
+
 void push_moveable_piece(int from, int to, int promote, int castle, bool capture, bool en_capture, bool pawn, bool pawn2) {
 
 	// white pawn move to promote
@@ -407,25 +410,22 @@ void push_moveable_piece(int from, int to, int promote, int castle, bool capture
 	g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
 }
 
-
-
-
-bool checkLegalMove(MoveByte movebyte) {
-
-
-	// attack
-	if (false) {
-
-	}
-
-
-
-	return true;
-}
-
-
-bool backMove()
+bool backMove(MoveByte moveByte)
 {
+	//debug
+	hply -= 2;
+	//cout << "hply " << hply << endl;
+	for (int i = 0; i < 2; i++) {
+		for (int j = 0; j < 64; j++) {
+			board[i][j] = history[hply].board[i][j];
+		}
+	}
+	castle = history[hply].castle;
+	//cout << "``````````````````````hist``````````````````" << endl;
+	//board_print(hist_board[hply]);
+	//cout << "`````````````````````board``````````````````" << endl;
+	//board_print(board);
+	hply++;
 	return true;
 }
 

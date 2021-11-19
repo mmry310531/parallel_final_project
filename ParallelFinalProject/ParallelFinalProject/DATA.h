@@ -102,12 +102,13 @@ extern int move_offset[8];
 extern int knight_jump[8];
 // dynamic
 extern int board[2][64];
+extern Hist_t history[1024];
 extern MoveByte_set gen_dat[4096];
 extern int first_move[32];
 extern int side;
 extern int xside;
 extern int ply;
-extern int half_ply;
+extern int hply;
 extern char castle;
 
 extern bool AUTO;

@@ -22,13 +22,13 @@ typedef struct MoveByte{
 	bool legal;
 } MoveByte;
 
-
-
-
-
 typedef struct MoveByte_set {
 	MoveByte movebyte;
 	int score;
 } MoveByte_set;
 
+typedef struct Hist{
+	char castle;
+	int board[2][64];
+} Hist_t;
 

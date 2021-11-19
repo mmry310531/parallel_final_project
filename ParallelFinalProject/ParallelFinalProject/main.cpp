@@ -39,7 +39,8 @@ int main()
 			if (!strcmp(s, "new")) {
 				cout << "create a new game\n";
 				board_init();
-				board_print();
+				generateMove();
+				board_print(board);
 			}
 			else if (!strcmp(s, "t")) {
 				cin >> thread_num;
@@ -59,21 +60,31 @@ int main()
 				printf("             A7A8Q \n");
 			}
 			else if (!strcmp(s, "p")) {
-				board_print();
+				board_print(board);
 			}
 			else if (!strcmp(s, "q")) {
 				return 0;
 			}
+			else if (!strcmp(s, "u")) {
+				if (hply != 0) {
+					backMove(move);
+					generateMove();
+				}
+			}
+			else if (!strcmp(s, "check")) {
+				for (int i = 0; i < hply; i++) {
+					board_print(history[i].board);
+				}
+			}
 			else {
 				move = ReadMove(s);
-				cout << convertIndex2Readible(move.from) << ", " << convertIndex2Readible(move.to) << endl;
-				cout << move.legal << endl;
 				if (!move.legal) {
 					cout << "Illegal Move!\n";
 					continue;
 				}
 				else {
 					bool moveLegal = makeMove(move);
+					ply = 0;
 					generateMove();
 					//side = COMPUTER_SIDE;
 					//xside = PLAYER_SIDE;
