@@ -30,5 +30,6 @@ typedef struct MoveByte_set {
 typedef struct Hist{
 	char castle;
 	int board[2][64];
+	int ep;
 } Hist_t;
 

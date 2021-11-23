@@ -15,7 +15,7 @@ int board_init()
 	for (int i = 0; i < 64; ++i) {
 		board[BColor][i] = init_color[i];
 		board[BPiece][i] = init_piece[i];
-		
+
 	}
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 64; j++) {
@@ -92,8 +92,8 @@ int board_print(int board_[2][64])
 
 MoveByte ReadMove(string s) {
 	MoveByte mb;
-	int from, to, piece, promote;
-	mb.from = mb.to = mb.promote =  NONE; mb.legal = false;
+	int from, to, piece, promote, color;
+	mb.from = mb.to = mb.promote = NONE; mb.legal = false; mb.pawn2 = false;
 
 	if (s.length() < 4) {
 		return mb;
@@ -109,6 +109,7 @@ MoveByte ReadMove(string s) {
 		promote = -1;
 		//cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 		piece = board[BPiece][from];
+		color = board[BColor][from];
 		if (s.length() == 5) {
 			if (s[4] == 'r') {
 				promote = ROOK;
@@ -119,7 +120,7 @@ MoveByte ReadMove(string s) {
 			else if (s[4] == 'n') {
 				promote = KNIGHT;
 			}
-			else{
+			else {
 				promote = QUEEN;
 				// shouldn't be here
 			}
@@ -127,7 +128,7 @@ MoveByte ReadMove(string s) {
 
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
-			
+
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
@@ -136,12 +137,18 @@ MoveByte ReadMove(string s) {
 				mb.castle = gen_dat[i].movebyte.castle;
 				mb.en_capture = gen_dat[i].movebyte.en_capture;
 				mb.legal = 1;
+				mb.pawn2 = false;
+
+				if (piece == PAWN && (from - to == 16))
+					mb.pawn2 = true;
+				if (piece == PAWN && (to - from == 16))
+					mb.pawn2 = true;
 				return mb;
 			}
 		}
 	}
 	return mb;
-	
+
 }
 
 bool makeMove(MoveByte moveByte)
@@ -152,6 +159,8 @@ bool makeMove(MoveByte moveByte)
 	bool Pass = false;
 	//int piece = board[BPiece][moveByte.from];
 	int color = board[BColor][moveByte.from];
+	int ep;
+	if (hply != 0) ep = history[hply - 1].ep;
 
 	if (board[BPiece][from] == ROOK) {
 		if (from == H1) {
@@ -201,12 +210,21 @@ bool makeMove(MoveByte moveByte)
 		}
 	}
 
-		board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
-		board[BColor][moveByte.to] = side;
+	if (board[BPiece][from] == PAWN && board[BPiece][to] && board[BColor][from] == WHITE && (abs(from - ep) == 1)) {
+		board[BPiece][ep] = NONE;
+		board[BColor][ep] = NONE;
+	} // if : en passant move
 
-		board[BPiece][moveByte.from] = NONE;
-		board[BColor][moveByte.from] = NONE;
-	
+	if (board[BPiece][from] == PAWN && board[BPiece][to] == NONE && board[BColor][from] == BLACK && (abs(from - ep) == 1)) {
+		board[BPiece][ep] = NONE;
+		board[BColor][ep] = NONE;
+	} // if
+	board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
+	board[BColor][moveByte.to] = side;
+
+	board[BPiece][moveByte.from] = NONE;
+	board[BColor][moveByte.from] = NONE;
+
 
 	// backup history
 	for (int i = 0; i < 2; i++) {
@@ -214,6 +232,13 @@ bool makeMove(MoveByte moveByte)
 			history[hply].board[i][j] = board[i][j];
 		}
 	}
+
+	if (moveByte.pawn2) {
+		// cout << "en : " << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		history[hply].ep = to;
+	} // if				
+	else history[hply].ep = -1;
+
 	history[hply].castle = castle;
 
 	hply++;
@@ -348,6 +373,7 @@ void generateMove()
 			// TODO
 
 			// handle pawn
+			int ep = history[hply - 1].ep;
 
 			if (board[BPiece][square] == PAWN) {
 				if (side == WHITE) {
@@ -365,6 +391,17 @@ void generateMove()
 						}
 					}
 
+					if (ep != -1) {
+						if (square - 1 == ep) {
+							// cout << "Got ep : " << ep;
+							push_moveable_piece(square, (square - 9), NONE, NONE, false, true, true, false);
+						} // if
+						if (square + 1 == ep) {
+							// cout << "Got ep : " << ep;
+							push_moveable_piece(square, (square - 7), NONE, NONE, false, true, true, false);
+						} // if					
+					} // if
+
 				}
 				else {
 					if (COL(square) != 0 && board[BColor][square + 7] == WHITE) {
@@ -381,6 +418,17 @@ void generateMove()
 						}
 					}
 
+					if (ep != -1) {
+						if (square - 1 == ep) {
+							// cout << "Got ep : " << ep;
+							push_moveable_piece(square, (square + 7), NONE, NONE, false, true, true, false);
+						} // if
+						if (square + 1 == ep) {
+							// cout << "Got ep : " << ep;
+							push_moveable_piece(square, (square + 9), NONE, NONE, false, true, true, false);
+						} // if					
+					} // if
+
 				}
 
 			}
@@ -393,14 +441,37 @@ void push_moveable_piece(int from, int to, int promote, int castle, bool capture
 
 	// white pawn move to promote
 	if (to < 8 && pawn) {
+		for (int i = 0; i < 4; i++) {
+			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+			g->movebyte.from = from;
+			g->movebyte.to = to;
+			g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+			g->movebyte.legal = true;
+			g->score = 0;
+			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+			// update board
+		} // for
 
+		return;
 	}
+
 	// black pawn move to promote
 	if (to >= 56 && pawn) {
+		for (int i = 0; i < 4; i++) {
+			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+			g->movebyte.from = from;
+			g->movebyte.to = to;
+			g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+			g->movebyte.legal = true;
+			g->score = 0;
+			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+			// update board
+		} // for
 
+		return;
 	}
 
-	MoveByte_set* g = &gen_dat[first_move[ply+1]++];
+	MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
 	g->movebyte.from = from;
 	g->movebyte.to = to;
 	g->movebyte.castle = castle;
@@ -472,9 +543,9 @@ bool attack(int square, int xside) {
 
 			}
 			// Done : queen bishop rook 
-			else if(board[BPiece][square] == QUEEN || 
-				board[BPiece][square] == BISHOP || 
-				board[BPiece][square] == ROOK){
+			else if (board[BPiece][square] == QUEEN ||
+				board[BPiece][square] == BISHOP ||
+				board[BPiece][square] == ROOK) {
 				int start_n = 0;
 				int end_n = 8;
 				if (board[BPiece][square] == BISHOP)
@@ -490,7 +561,7 @@ bool attack(int square, int xside) {
 				}
 			}
 			else if (board[BPiece][square] == KING) {
-				
+
 			}
 			else if (board[BPiece][square] == KNIGHT) {
 
