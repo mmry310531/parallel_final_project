@@ -8,6 +8,6 @@ bool makeMove(MoveByte movebyte);
 void generateMove();
 void PreComputeMove();
 bool backMove(MoveByte movebyte);
-
+bool in_check(int color);
 void push_moveable_piece(int from, int to, int promote, int castle, bool capture, bool en_capture, bool pawn, bool pawn2);
 string convertIndex2Readible(int square);

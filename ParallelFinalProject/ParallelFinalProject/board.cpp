@@ -456,6 +456,49 @@ void PreComputeMove() {
 
 }
 
+bool in_check(int color) {
+	// todo
+	return false;
+}
+
+bool attack(int square, int xside) {
+	PreComputeMove(); //need this one?
+	int i, j, n;
+	for (int i = 0; i < 64; i++) {
+		if (board[BColor][i] == xside) {
+			//
+
+			if (board[BPiece][square] == PAWN) {
+
+			}
+			// Done : queen bishop rook 
+			else if(board[BPiece][square] == QUEEN || 
+				board[BPiece][square] == BISHOP || 
+				board[BPiece][square] == ROOK){
+				int start_n = 0;
+				int end_n = 8;
+				if (board[BPiece][square] == BISHOP)
+					start_n = 4;
+				if (board[BPiece][square] == ROOK)
+					end_n = 4;
+				for (int direction = start_n; direction < end_n; ++direction) {
+					for (int n = 0; n < NumSquaresToEdge[square][direction]; ++n) {
+						int targetSquare = square + move_offset[direction] * (n + 1);
+						if (board[BColor][targetSquare] == side)
+							return true;
+					}
+				}
+			}
+			else if (board[BPiece][square] == KING) {
+				
+			}
+			else if (board[BPiece][square] == KNIGHT) {
+
+			}
+		}
+	}
+}
+
 // for debug
 string convertIndex2Readible(int square)
 {
