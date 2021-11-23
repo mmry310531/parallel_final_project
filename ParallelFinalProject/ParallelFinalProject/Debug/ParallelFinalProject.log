@@ -1,7 +1,3 @@
-﻿  board.cpp
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(537,9): warning C4101: 'j': 未參考的區域變數
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(537,6): warning C4101: 'i': 未參考的區域變數
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(537,12): warning C4101: 'n': 未參考的區域變數
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(571): warning C4715: 'attack': 不是所有控制路徑都傳回值
-  ParallelFinalProject.vcxproj -> D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe
+﻿  main.cpp
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
+  ParallelFinalProject.vcxproj -> C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe

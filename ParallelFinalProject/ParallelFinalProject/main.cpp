@@ -67,7 +67,7 @@ int main()
 			}
 			else if (!strcmp(s, "u")) {
 				if (hply != 0) {
-					backMove(move);
+					backMove();
 					generateMove();
 				}
 			}
@@ -84,13 +84,21 @@ int main()
 				}
 				else {
 					bool moveLegal = makeMove(move);
-					ply = 0;
-
-					int temp = 0;
-					temp = side;
-					side = xside;
-					xside = temp;
+					if (moveLegal) {
+						int temp = 0;
+						temp = side;
+						side = xside;
+						xside = temp;
+						generateMove();
+					}
+					else {
+						cout << "Illegal Move!\n";
+						
+					}
 					generateMove();
+					ply = 0;
+					
+
 				}
 			}
 			
