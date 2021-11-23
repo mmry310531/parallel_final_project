@@ -2,6 +2,7 @@
 #include "Def.h"
 #include "DATA.h"
 #include "board.h"
+#include "search.h"
 using namespace std;
 
 
@@ -61,6 +62,7 @@ int main()
 			}
 			else if (!strcmp(s, "p")) {
 				board_print(board);
+				cout << "score : " << EvaluateBoard(board) << endl;
 			}
 			else if (!strcmp(s, "q")) {
 				return 0;
@@ -73,7 +75,7 @@ int main()
 			}
 			else if (!strcmp(s, "check")) {
 				for (int i = 0; i < hply; i++) {
-					board_print(history[i].board);
+					board_print(history[i].board);					
 				}
 			}
 			else {
