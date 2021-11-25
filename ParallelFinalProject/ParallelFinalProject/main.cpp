@@ -17,6 +17,7 @@ int main()
 	xside = COMPUTER_SIDE;
 	board_init();
 	generateMove(false);
+	ReadBook();
 	while (true) {
 		
 		// if (side == COMPUTER_SIDE || AUTO) {
