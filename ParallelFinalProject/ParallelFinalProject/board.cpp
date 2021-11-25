@@ -106,7 +106,7 @@ MoveByte ReadMove(string s) {
 		to = s[2] - 'a';
 		to += 8 * (8 - (s[3] - '0'));
 		promote = -1;
-		//cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		//
 		piece = board[BPiece][from];
 		color = board[BColor][from];
 		if (s.length() == 5) {
@@ -125,9 +125,12 @@ MoveByte ReadMove(string s) {
 			}
 		}
 
+		// for debug
+		for (int i = 0; i < first_move[1]; ++i) {
+			cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+		}
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
-
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
@@ -258,8 +261,9 @@ bool makeMove(MoveByte moveByte)
 	return true;
 }
 
-void generateMove()
+void generateMove(bool search)
 {
+	cout << "side " << side << "ply : " << ply << endl;
 	board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
@@ -284,11 +288,11 @@ void generateMove()
 						//cout << board[BPiece][square] << "  , " << convertIndex2Readible(targetSquare) << endl;
 
 						if (board[BColor][targetSquare] == xside) {
-							push_moveable_piece(square, targetSquare, NONE, NONE, true, false, false, false);
+							push_moveable_piece(search, square, targetSquare, NONE, NONE, true, false, false, false);
 							break;
 						}
 						else {
-							push_moveable_piece(square, targetSquare, NONE, NONE, false, false, false, false);
+							push_moveable_piece(search, square, targetSquare, NONE, NONE, false, false, false, false);
 						}
 
 
@@ -311,10 +315,10 @@ void generateMove()
 								continue;
 							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(knightSquare) << endl;
 							if (board[BColor][knightSquare] == xside) {
-								push_moveable_piece(square, knightSquare, false, false, true, false, false, false);
+								push_moveable_piece(search, square, knightSquare, false, false, true, false, false, false);
 							}
 							else {
-								push_moveable_piece(square, knightSquare, false, false, false, false, false, false);
+								push_moveable_piece(search, square, knightSquare, false, false, false, false, false, false);
 							}
 						}
 
@@ -328,12 +332,11 @@ void generateMove()
 					int TargetSquare = square + move_offset[i];
 					if (TargetSquare >= 0 && TargetSquare < 64 && board[BColor][TargetSquare] != side) {
 						if (board[BColor][TargetSquare] == xside) {
-							push_moveable_piece(square, TargetSquare, false, false, true, false, false, false);
+							push_moveable_piece(search, square, TargetSquare, false, false, true, false, false, false);
 						}
 						else {
-							push_moveable_piece(square, TargetSquare, false, false, false, false, false, false);
+							push_moveable_piece(search, square, TargetSquare, false, false, false, false, false, false);
 						}
-						//cout << "King" << convertIndex2Readible(square) << ", " << convertIndex2Readible(TargetSquare) << endl;
 					}
 				}
 
@@ -344,8 +347,7 @@ void generateMove()
 						//if(attack ( F1, G1) continue
 						//else
 						if (board[BColor][F1] == NONE && board[BColor][G1] == NONE) {
-							push_moveable_piece(square, G1, false, 1, false, false, false, false);
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G1) << endl;
+							push_moveable_piece(search, square, G1, false, 1, false, false, false, false);
 						}
 					}
 					// left
@@ -353,8 +355,7 @@ void generateMove()
 						//if(attack ( C1, D1) continue
 						//else
 						if (board[BColor][C1] == NONE && board[BColor][D1] == NONE) {
-							push_moveable_piece(square, C1, false, 2, false, false, false, false);
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(C1) << endl;
+							push_moveable_piece(search, square, C1, false, 2, false, false, false, false);
 						}
 					}
 				}
@@ -364,8 +365,7 @@ void generateMove()
 						//if(attack ( F7, G7) continue
 						//else
 						if (board[BColor][F7] == NONE && board[BColor][G7] == NONE) {
-							push_moveable_piece(square, G7, false, 4, false, false, false, false);
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(G7) << endl;
+							push_moveable_piece(search, square, G7, false, 4, false, false, false, false);
 						}
 					}
 					// left
@@ -374,8 +374,7 @@ void generateMove()
 						//if(attack ( C7, D7) continue
 						//else
 						if (board[BColor][C7] == NONE && board[BColor][D7] == NONE) {
-							push_moveable_piece(square, C7, false, 8, false, false, false, false);
-							//cout << board[BPiece][square] << "  , " << convertIndex2Readible(C7) << endl;
+							push_moveable_piece(search, square, C7, false, 8, false, false, false, false);
 						}
 					}
 				}
@@ -389,54 +388,50 @@ void generateMove()
 			if (board[BPiece][square] == PAWN) {
 				if (side == WHITE) {
 					if (COL(square) != 0 && board[BColor][square - 9] == BLACK) {
-						push_moveable_piece(square, (square - 9), NONE, NONE, true, false, true, false);
+						push_moveable_piece(search, square, (square - 9), NONE, NONE, true, false, true, false);
 					}
 					if (COL(square) != 7 && board[BColor][square - 7] == BLACK) {
-						push_moveable_piece(square, (square - 7), NONE, NONE, true, false, true, false);
+						push_moveable_piece(search, square, (square - 7), NONE, NONE, true, false, true, false);
 					}
 
 					if (board[BColor][square - 8] == NONE) {
-						push_moveable_piece(square, (square - 8), NONE, NONE, false, false, true, false);
+						push_moveable_piece(search, square, (square - 8), NONE, NONE, false, false, true, false);
 						if (board[BPiece][square - 16] && square >= 48) {
-							push_moveable_piece(square, (square - 16), NONE, NONE, false, false, true, true);
+							push_moveable_piece(search, square, (square - 16), NONE, NONE, false, false, true, true);
 						}
 					}
 
 					if (ep != -1) {
 						if (square - 1 == ep) {
-							// cout << "Got ep : " << ep;
-							push_moveable_piece(square, (square - 9), NONE, NONE, false, true, true, false);
+							push_moveable_piece(search, square, (square - 9), NONE, NONE, false, true, true, false);
 						} // if
 						if (square + 1 == ep) {
-							// cout << "Got ep : " << ep;
-							push_moveable_piece(square, (square - 7), NONE, NONE, false, true, true, false);
+							push_moveable_piece(search, square, (square - 7), NONE, NONE, false, true, true, false);
 						} // if					
 					} // if
 
 				}
 				else {
 					if (COL(square) != 0 && board[BColor][square + 7] == WHITE) {
-						push_moveable_piece(square, (square + 7), NONE, NONE, true, false, true, false);
+						push_moveable_piece(search, square, (square + 7), NONE, NONE, true, false, true, false);
 					}
 					if (COL(square) != 7 && board[BColor][square + 9] == WHITE) {
-						push_moveable_piece(square, (square + 9), NONE, NONE, true, false, true, false);
+						push_moveable_piece(search, square, (square + 9), NONE, NONE, true, false, true, false);
 					}
 
 					if (board[BColor][square + 8] == NONE) {
-						push_moveable_piece(square, (square + 8), NONE, NONE, false, false, true, false);
+						push_moveable_piece(search, square, (square + 8), NONE, NONE, false, false, true, false);
 						if (board[BPiece][square + 16] && square <= 15) {
-							push_moveable_piece(square, (square + 16), NONE, NONE, false, false, true, true);
+							push_moveable_piece(search, square, (square + 16), NONE, NONE, false, false, true, true);
 						}
 					}
 
 					if (ep != -1) {
 						if (square - 1 == ep) {
-							// cout << "Got ep : " << ep;
-							push_moveable_piece(square, (square + 7), NONE, NONE, false, true, true, false);
+							push_moveable_piece(search, square, (square + 7), NONE, NONE, false, true, true, false);
 						} // if
 						if (square + 1 == ep) {
-							// cout << "Got ep : " << ep;
-							push_moveable_piece(square, (square + 9), NONE, NONE, false, true, true, false);
+							push_moveable_piece(search, square, (square + 9), NONE, NONE, false, true, true, false);
 						} // if					
 					} // if
 
@@ -448,65 +443,80 @@ void generateMove()
 	}
 }
 
-void push_moveable_piece(int from, int to, int promote, int castle, bool capture, bool en_capture, bool pawn, bool pawn2) {
+void push_moveable_piece(bool search, int from, int to, int promote, int castle, bool capture, bool en_capture, bool pawn, bool pawn2) {
 
-	// white pawn move to promote
-	if (to < 8 && pawn) {
-		for (int i = 0; i < 4; i++) {
-			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
-			g->movebyte.from = from;
-			g->movebyte.to = to;
-			g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
-			g->movebyte.legal = true;
-			g->score = 0;
-			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
-			// update board
-		} // for
+	//if (search) {
+		// white pawn move to promote
+		if (to < 8 && pawn) {
+			for (int i = 0; i < 4; i++) {
+				MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+				g->movebyte.from = from;
+				g->movebyte.to = to;
+				g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+				g->movebyte.legal = true;
+				g->score = 0;
+				g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+				// update board
+			} // for
 
-		return;
-	}
+			return;
+		}
+	//}
 
 	// black pawn move to promote
-	if (to >= 56 && pawn) {
-		for (int i = 0; i < 4; i++) {
+	//if (search) {
+		if (to >= 56 && pawn) {
+			for (int i = 0; i < 4; i++) {
+				MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+				g->movebyte.from = from;
+				g->movebyte.to = to;
+				g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+				g->movebyte.legal = true;
+				g->score = 0;
+				g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+				// update board
+			} // for
+
+			return;
+		}
+	//}
+
+	if (search) {
+		if (capture == true) {
 			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
 			g->movebyte.from = from;
 			g->movebyte.to = to;
-			g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
+			g->movebyte.castle = castle;
+			g->movebyte.promote = NONE;
 			g->movebyte.legal = true;
 			g->score = 0;
 			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
-			// update board
-		} // for
-
-		return;
+		}
 	}
-
-	MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
-	g->movebyte.from = from;
-	g->movebyte.to = to;
-	g->movebyte.castle = castle;
-	g->movebyte.promote = NONE;
-	g->movebyte.legal = true;
-	g->score = 0;
-	g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+	else {
+		MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+		g->movebyte.from = from;
+		g->movebyte.to = to;
+		g->movebyte.castle = castle;
+		g->movebyte.promote = NONE;
+		g->movebyte.legal = true;
+		g->score = 0;
+		g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+	}
+	
 }
 
 bool backMove()
 {
 	//debug
 	hply -= 2;
-	//cout << "hply " << hply << endl;
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 64; j++) {
 			board[i][j] = history[hply].board[i][j];
 		}
 	}
 	castle = history[hply].castle;
-	//cout << "``````````````````````hist``````````````````" << endl;
-	//board_print(hist_board[hply]);
-	//cout << "`````````````````````board``````````````````" << endl;
-	//board_print(board);
+
 	hply++;
 	return true;
 }
@@ -539,8 +549,6 @@ void PreComputeMove() {
 }
 
 bool in_check(int side) {
-	// todo
-
 	for (int i = 0; i < 64; i++) {
 		if (board[BColor][i] == side && board[BPiece][i] == KING)
 			return attack(i, side ^ 1);
@@ -588,7 +596,6 @@ bool attack(int square, int xside) {
 						int targetSquare = i + move_offset[direction] * (n + 1);
 						if (board[BColor][targetSquare] == xside) break;
 						if (targetSquare == square) {
-							//cout << board[BPiece][i] << endl;
 							return true;
 						}
 					}
@@ -606,7 +613,6 @@ bool attack(int square, int xside) {
 				for (int j = 0; j < 8; j++) {
 					int knightSquare = i + knight_jump[j];
 					if (knightSquare >= 0 && knightSquare < 64) {
-						cout << convertIndex2Readible(knightSquare) << endl;
 						int knight_col = COL(knightSquare);
 						int knight_row = ROW(knightSquare);
 

@@ -16,7 +16,7 @@ int main()
 	side = PLAYER_SIDE;
 	xside = COMPUTER_SIDE;
 	board_init();
-	generateMove();
+	generateMove(false);
 	while (true) {
 		
 		// if (side == COMPUTER_SIDE || AUTO) {
@@ -40,7 +40,7 @@ int main()
 			if (!strcmp(s, "new")) {
 				cout << "create a new game\n";
 				board_init();
-				generateMove();
+				generateMove(false);
 				board_print(board);
 			}
 			else if (!strcmp(s, "t")) {
@@ -70,7 +70,7 @@ int main()
 			else if (!strcmp(s, "u")) {
 				if (hply != 0) {
 					backMove();
-					generateMove();
+					generateMove(false);
 				}
 			}
 			else if (!strcmp(s, "check")) {
@@ -87,20 +87,14 @@ int main()
 				else {
 					bool moveLegal = makeMove(move);
 					if (moveLegal) {
-						int temp = 0;
-						temp = side;
-						side = xside;
-						xside = temp;
-						generateMove();
+						side ^= 1;
+						xside ^= 1;
 					}
 					else {
 						cout << "Illegal Move!\n";
-						
 					}
-					generateMove();
 					ply = 0;
-					
-
+					generateMove(false);
 				}
 			}
 			

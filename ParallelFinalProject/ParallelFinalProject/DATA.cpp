@@ -8,6 +8,8 @@ Hist_t history[1024];
 MoveByte_set gen_dat[4096];
 
 int first_move[32];
+MoveByte bestMove;
+int bestEval;
 int side;
 int xside;
 int ply;
