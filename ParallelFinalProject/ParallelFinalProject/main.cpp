@@ -20,21 +20,49 @@ int main()
 	ReadBook();
 	while (true) {
 		
-		// if (side == COMPUTER_SIDE || AUTO) {
-		// 	// time start;
-		// 	//move = search();
-		// 	//if (move == NULL) {
-		// 	//	printf("no legal move\n");
-		// 
-		// 	//	// initial a board
-		// 	//	init();
-		// 	//}
-		// 	// time end;
-		// 
-		// 	//make(move);
-		// }
+		if (side == COMPUTER_SIDE || AUTO) {
+			// time start;
+			//move = search();
+			//if (move == NULL) {
+			//	printf("no legal move\n");
+		
+			//	// initial a board
+			//	init();
+			//}
+			// time end;
+		
+			//make(move);
 
-		if ( 1 ) {
+			// --modify start--
+			cout << "s: " << s << endl;
+			int temp_ply = hply / 2 - 1;
+			int whichBook = searchBook(s, temp_ply);
+			cout << "whichBook: " << whichBook << endl;
+			string s_computer;
+			if (whichBook+1) s_computer = getStep(whichBook, temp_ply).c_str();	
+			cout << "s_computer: " << s_computer << endl;
+			move = ReadMove(s_computer);
+			if (!move.legal) {
+				cout << "Illegal Move! : need to auto gen \n";
+				side ^= 1;
+				xside ^= 1;
+				continue;
+			}
+			else { // s : first c2c4
+				bool moveLegal = makeMove(move);
+				if (moveLegal) {
+					side ^= 1;
+					xside ^= 1;
+				}
+				else {
+					cout << "Illegal Move!\n";
+				}
+				ply = 0;
+				generateMove(false);
+			}
+		}
+
+		else {
 			printf("command : ");
 			cin >> s;
 
@@ -64,6 +92,7 @@ int main()
 			else if (!strcmp(s, "p")) {
 				board_print(board);
 				cout << "score : " << EvaluateBoard(board) << endl;
+				
 			}
 			else if (!strcmp(s, "q")) {
 				return 0;
@@ -80,6 +109,7 @@ int main()
 				}
 			}
 			else {
+				cout << "s : " << s << endl;
 				move = ReadMove(s);
 				if (!move.legal) {
 					cout << "Illegal Move!\n";

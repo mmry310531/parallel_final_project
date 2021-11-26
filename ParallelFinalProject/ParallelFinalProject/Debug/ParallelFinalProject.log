@@ -1,14 +1,14 @@
-﻿  main.cpp
+﻿  search.cpp
 D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
 D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
-  search.cpp
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.h(2,17): warning C4081: 必須是 '('，但卻找到 'newline'
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(29,21): warning C4018: '<': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(40,20): warning C4018: '<': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(41,21): warning C4018: '<': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(82,11): warning C4101: 'bestMove': 未參考的區域變數
-  正在產生程式碼...
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(123): warning C4715: 'search': 不是所有控制路徑都傳回值
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(34,21): warning C4018: '<': signed/unsigned 不相符
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(86,20): warning C4018: '<': signed/unsigned 不相符
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(87,13): warning C4018: '>=': signed/unsigned 不相符
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(105,13): warning C4244: '引數': 將 'time_t' 轉換為 'unsigned int'，由於類型不同，可能導致資料遺失
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(114,12): warning C4018: '>=': signed/unsigned 不相符
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(118,20): warning C4018: '<': signed/unsigned 不相符
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(120,14): warning C4018: '>=': signed/unsigned 不相符
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(134,11): warning C4101: 'bestMove': 未參考的區域變數
+D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(175): warning C4715: 'search': 不是所有控制路徑都傳回值
 Debug\search.obj : warning LNK4042: 指定物件超過一次，已忽略多餘的部分
   ParallelFinalProject.vcxproj -> D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe

@@ -124,13 +124,17 @@ MoveByte ReadMove(string s) {
 				// shouldn't be here
 			}
 		}
-
 		// for debug
+		//for (int i = 0; i < first_move[1]; ++i) {
+		//	cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+		//}
+		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
-			cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+			cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 		}
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
+			// cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
