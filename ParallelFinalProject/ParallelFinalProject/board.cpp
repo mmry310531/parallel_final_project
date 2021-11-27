@@ -232,7 +232,14 @@ bool makeMove(MoveByte moveByte)
 		board[BPiece][ep] = NONE;
 		board[BColor][ep] = NONE;
 	} // if
-	board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
+
+	if (moveByte.promote > 1) {
+		board[BPiece][moveByte.to] = moveByte.promote;
+	}
+	else {
+		board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
+	}
+	
 	board[BColor][moveByte.to] = side;
 
 	board[BPiece][moveByte.from] = NONE;

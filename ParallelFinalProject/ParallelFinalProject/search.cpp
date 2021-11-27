@@ -52,21 +52,23 @@ int EvaluateBoard(int board_t[2][64]) {
 	int score_BLACK = 0;
 	for (int i = 0; i < 64; i++) {
 		if (board_t[BColor][i] == WHITE) {
-			if (board_t[BPiece][i] == QUEEN) score_WHITE += 900;
-			else if (board_t[BPiece][i] == BISHOP) score_WHITE += 300;
-			else if (board_t[BPiece][i] == KNIGHT) score_WHITE += 300;
-			else if (board_t[BPiece][i] == ROOK) score_WHITE += 500;
-			else if (board_t[BPiece][i] == PAWN) score_WHITE += 100;
+			if (board_t[BPiece][i] == QUEEN) { score_WHITE += 900;}
+			else if (board_t[BPiece][i] == BISHOP) { score_WHITE += 300; score_WHITE += bishop_score[i]; }
+			else if (board_t[BPiece][i] == KNIGHT) { score_WHITE += 300; score_WHITE += knight_score[i]; }
+			else if (board_t[BPiece][i] == ROOK) { score_WHITE += 500; score_WHITE += rook_score[i]; }
+			else if (board_t[BPiece][i] == PAWN) { score_WHITE += 100; score_WHITE += pawn_score[i]; }
 			else;
 		} // if
 		else { // BLACK
-			if (board_t[BPiece][i] == QUEEN) score_BLACK += 900;
-			else if (board_t[BPiece][i] == BISHOP) score_BLACK += 300;
-			else if (board_t[BPiece][i] == KNIGHT) score_BLACK += 300;
-			else if (board_t[BPiece][i] == ROOK) score_BLACK += 500;
-			else if (board_t[BPiece][i] == PAWN) score_BLACK += 100;
+			if (board_t[BPiece][i] == QUEEN) { score_BLACK += 900;}
+			else if (board_t[BPiece][i] == BISHOP) { score_BLACK += 300; score_BLACK += bishop_score[flip[i]]; }
+			else if (board_t[BPiece][i] == KNIGHT) { score_BLACK += 300; score_BLACK += knight_score[flip[i]]; }
+			else if (board_t[BPiece][i] == ROOK) { score_BLACK += 300; score_BLACK += rook_score[flip[i]]; }
+			else if (board_t[BPiece][i] == PAWN) { score_BLACK += 300;score_BLACK += pawn_score[flip[i]]; }
 			else;
 		} // else
+
+
 	} // for
 
 	return score_WHITE - score_BLACK;
@@ -75,36 +77,40 @@ int EvaluateBoard(int board_t[2][64]) {
 bool cutoff;
 
 int before_search( ) {
+	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
 	
-	for (int i = 5; i <= 5; ++i) {
+	for (int i = 2; i <= 2; ++i) {
 		score = search(-9999, 9999, i);
 	}
 
 
 	while (ply)
 		backMove();
+	printf("node : %d score : %d \n", node, score);
 	return 0;
 }
 
 int quiesceneceSearch(int alpha, int beta) {
 	MoveByte bestMove;
 	bool cutoff = false;
-	int score = EvaluateBoard(history[hply+ply].board);
+	int score = EvaluateBoard(board);
 	if (score > beta) return beta;
 	if (score > alpha) alpha = score;
 	generateMove(true);
-
+	if (node > 1023)
+		return score;
+	node++;
 	for (int i = first_move[ply]; i < first_move[ply + 1]; i++) {
-		if (cutoff || !makeMove(gen_dat[i].movebyte))
+		if (!makeMove(gen_dat[i].movebyte))
 			continue;
 		score = -quiesceneceSearch(-beta, -alpha);
 		backMove();
-		if (score > alpha && !cutoff) {
+		if (score > alpha) {
 			// too good
 			if (score >= beta) {
-				cutoff = true;
+				return beta;
 			}
 			else {
 				alpha = score;
@@ -126,6 +132,11 @@ int quiesceneceSearch(int alpha, int beta) {
 // pvs
 int search(int alpha, int beta, int depth) {
 
+
+	if (!depth)
+		return quiesceneceSearch(alpha,  beta);
+	node++;
+
 	bool NoLegalMove = true;
 	bool Check = false;
 	int score = 0;
@@ -145,7 +156,7 @@ int search(int alpha, int beta, int depth) {
 		depth++;
 	}
 	cutoff = false;
-
+	generateMove(false);
 	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
@@ -166,15 +177,12 @@ int search(int alpha, int beta, int depth) {
 		
 	}
 	
-	if (NoLegalMove) {
+	if (!NoLegalMove) {
 		if (Check)
 			return -49999 + ply;
 		else
 			return 0;
 	}
 
-	if (depth == 0) {
-		return quiesceneceSearch(alpha, beta);
-	}
 
 }
