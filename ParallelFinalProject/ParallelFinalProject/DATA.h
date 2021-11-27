@@ -128,4 +128,5 @@ extern const int pawn_score[64];
 extern const int knight_score[64];
 extern const int bishop_score[64];
 extern const int rook_score[64];
+extern const int king_score[64];
 extern const int flip[64];

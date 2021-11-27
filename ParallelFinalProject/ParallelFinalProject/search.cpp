@@ -52,26 +52,30 @@ int EvaluateBoard(int board_t[2][64]) {
 	int score_BLACK = 0;
 	for (int i = 0; i < 64; i++) {
 		if (board_t[BColor][i] == WHITE) {
-			if (board_t[BPiece][i] == QUEEN) { score_WHITE += 900;}
+			if (board_t[BPiece][i] == QUEEN) { score_WHITE += 900; }
 			else if (board_t[BPiece][i] == BISHOP) { score_WHITE += 300; score_WHITE += bishop_score[i]; }
 			else if (board_t[BPiece][i] == KNIGHT) { score_WHITE += 300; score_WHITE += knight_score[i]; }
 			else if (board_t[BPiece][i] == ROOK) { score_WHITE += 500; score_WHITE += rook_score[i]; }
 			else if (board_t[BPiece][i] == PAWN) { score_WHITE += 100; score_WHITE += pawn_score[i]; }
+			//else if (board_t[BPiece][i] == KING) { score_WHITE += king_score[i]; }
 			else;
 		} // if
 		else { // BLACK
 			if (board_t[BPiece][i] == QUEEN) { score_BLACK += 900;}
 			else if (board_t[BPiece][i] == BISHOP) { score_BLACK += 300; score_BLACK += bishop_score[flip[i]]; }
 			else if (board_t[BPiece][i] == KNIGHT) { score_BLACK += 300; score_BLACK += knight_score[flip[i]]; }
-			else if (board_t[BPiece][i] == ROOK) { score_BLACK += 300; score_BLACK += rook_score[flip[i]]; }
-			else if (board_t[BPiece][i] == PAWN) { score_BLACK += 300;score_BLACK += pawn_score[flip[i]]; }
+			else if (board_t[BPiece][i] == ROOK) { score_BLACK += 500; score_BLACK += rook_score[flip[i]]; }
+			else if (board_t[BPiece][i] == PAWN) { score_BLACK += 100;score_BLACK += pawn_score[flip[i]]; }
+			//else if (board_t[BPiece][i] == KING) { score_BLACK += king_score[flip[i]]; }
 			else;
 		} // else
 
 
 	} // for
-
-	return score_WHITE - score_BLACK;
+	if(side == WHITE)
+		return score_WHITE - score_BLACK;
+	else
+		return score_BLACK - score_WHITE;
 } // int
 
 bool cutoff;
@@ -81,8 +85,8 @@ int before_search( ) {
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
 	
-	for (int i = 2; i <= 2; ++i) {
-		score = search(-9999, 9999, i);
+	for (int i = 5; i <= 5; ++i) {
+		score = search(-99999, 99999, i);
 	}
 
 
