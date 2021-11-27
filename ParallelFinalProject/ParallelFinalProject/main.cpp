@@ -32,8 +32,8 @@ int main()
 			 makeMove(pv[0][0]);
 
 			 
-			 side ^= 1;
-			 xside ^= 1;
+			 //side ^= 1;
+			 //xside ^= 1;
 			 ply = 0;
 			 generateMove(false);
 			 board_print(board);
@@ -96,8 +96,8 @@ int main()
 				else {
 					bool moveLegal = makeMove(move);
 					if (moveLegal) {
-						side ^= 1;
-						xside ^= 1;
+						//side ^= 1;
+						//xside ^= 1;
 					}
 					else {
 						cout << "Illegal Move!\n";

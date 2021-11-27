@@ -261,12 +261,15 @@ bool makeMove(MoveByte moveByte)
 
 	history[hply].castle = castle;
 
+	side ^= 1;
+	xside ^= 1;
 	hply++;
 	ply++;
 	if (in_check(side)) {
 		backMove();
 		return false;
 	}
+	
 	return true;
 }
 
@@ -405,7 +408,7 @@ void generateMove(bool search)
 
 					if (board[BColor][square - 8] == NONE) {
 						push_moveable_piece(search, square, (square - 8), NONE, NONE, false, false, true, false);
-						if (board[BPiece][square - 16] && square >= 48) {
+						if (board[BPiece][square - 16] == NONE && square >= 48) {
 							push_moveable_piece(search, square, (square - 16), NONE, NONE, false, false, true, true);
 						}
 					}
@@ -430,7 +433,7 @@ void generateMove(bool search)
 
 					if (board[BColor][square + 8] == NONE) {
 						push_moveable_piece(search, square, (square + 8), NONE, NONE, false, false, true, false);
-						if (board[BPiece][square + 16] && square <= 15) {
+						if (board[BPiece][square + 16] == NONE && square <= 15) {
 							push_moveable_piece(search, square, (square + 16), NONE, NONE, false, false, true, true);
 						}
 					}
@@ -526,6 +529,8 @@ bool backMove()
 	}
 	castle = history[hply].castle;
 
+	side ^= 1;
+	xside ^= 1;
 	hply++;
 	ply--;
 	return true;

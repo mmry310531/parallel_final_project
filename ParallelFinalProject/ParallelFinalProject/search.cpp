@@ -57,7 +57,7 @@ int EvaluateBoard(int board_t[2][64]) {
 			else if (board_t[BPiece][i] == KNIGHT) { score_WHITE += 300; score_WHITE += knight_score[i]; }
 			else if (board_t[BPiece][i] == ROOK) { score_WHITE += 500; score_WHITE += rook_score[i]; }
 			else if (board_t[BPiece][i] == PAWN) { score_WHITE += 100; score_WHITE += pawn_score[i]; }
-			//else if (board_t[BPiece][i] == KING) { score_WHITE += king_score[i]; }
+			else if (board_t[BPiece][i] == KING) { score_WHITE += king_score[i]; }
 			else;
 		} // if
 		else { // BLACK
@@ -66,7 +66,7 @@ int EvaluateBoard(int board_t[2][64]) {
 			else if (board_t[BPiece][i] == KNIGHT) { score_BLACK += 300; score_BLACK += knight_score[flip[i]]; }
 			else if (board_t[BPiece][i] == ROOK) { score_BLACK += 500; score_BLACK += rook_score[flip[i]]; }
 			else if (board_t[BPiece][i] == PAWN) { score_BLACK += 100;score_BLACK += pawn_score[flip[i]]; }
-			//else if (board_t[BPiece][i] == KING) { score_BLACK += king_score[flip[i]]; }
+			else if (board_t[BPiece][i] == KING) { score_BLACK += king_score[flip[i]]; }
 			else;
 		} // else
 
