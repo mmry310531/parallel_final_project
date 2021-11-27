@@ -124,6 +124,7 @@ int quiesceneceSearch(int alpha, int beta) {
 			}
 		}
 	}
+	
 	return alpha;
 
 }
@@ -177,12 +178,13 @@ int search(int alpha, int beta, int depth) {
 		
 	}
 	
-	if (!NoLegalMove) {
+	if (NoLegalMove) {
 		if (Check)
 			return -49999 + ply;
 		else
 			return 0;
 	}
+	return alpha;
 
 
 }
