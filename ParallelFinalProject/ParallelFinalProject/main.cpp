@@ -12,7 +12,7 @@ int main()
 	MoveByte move;
 	char s[256];
 	int thread_num = 0;
-	AUTO = false;
+	AUTO = true;
 	side = PLAYER_SIDE;
 	xside = COMPUTER_SIDE;
 	board_init();
@@ -20,19 +20,27 @@ int main()
 	ReadBook();
 	while (true) {
 		
-		// if (side == COMPUTER_SIDE || AUTO) {
-		// 	// time start;
-		// 	//move = search();
-		// 	//if (move == NULL) {
-		// 	//	printf("no legal move\n");
-		// 
-		// 	//	// initial a board
-		// 	//	init();
-		// 	//}
-		// 	// time end;
-		// 
-		// 	//make(move);
-		// }
+		 if (side == COMPUTER_SIDE || AUTO) {
+			 
+			 if (side == WHITE) {
+				 cout << "white move \n";
+			 }
+			 else {
+				 cout << "black move \n";
+			 }
+			 before_search();
+			 makeMove(pv[0][0]);
+
+			 
+			 side ^= 1;
+			 xside ^= 1;
+			 ply = 0;
+			 generateMove(false);
+			 board_print(board);
+			 
+			 continue;
+
+		 }
 
 		if ( 1 ) {
 			printf("command : ");

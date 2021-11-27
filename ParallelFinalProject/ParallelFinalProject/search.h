@@ -1,6 +1,5 @@
 #pragma once
-#pragma warning
-#include "Def.h"
+#include "Def.h" 
 #include <iostream>
 #include <string> 
 

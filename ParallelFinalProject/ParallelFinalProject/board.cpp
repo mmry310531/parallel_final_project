@@ -1,8 +1,7 @@
-#include "DATA.h"
+﻿#include "DATA.h"
 #include "board.h"
 #include "Def.h"
-#include <iostream>
-using namespace std;
+
 
 
 int board_init()
@@ -27,7 +26,9 @@ int board_init()
 
 int board_print(int board_[2][64])
 {
+	cout << "    A  B  C  D  E  F  G  H\n\n";
 	for (int i = 0; i < 8; ++i) {
+		cout << (8 - i) << "   ";
 		for (int j = 0; j < 8; ++j) {
 			if (board_[BPiece][8 * i + j] == KING) {
 				if (board_[BColor][8 * i + j] == WHITE) {
@@ -86,6 +87,7 @@ int board_print(int board_[2][64])
 		}
 		cout << "\n";
 	}
+	cout << "\n    A  B  C  D  E  F  G  H\n";
 	return 0;
 }
 
@@ -263,8 +265,8 @@ bool makeMove(MoveByte moveByte)
 
 void generateMove(bool search)
 {
-	cout << "side " << side << "ply : " << ply << endl;
-	board_print(board);
+	//cout << "side " << side << "ply : " << ply << endl;
+	//board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
 	for (int square = 0; square < 64; ++square) {
@@ -518,6 +520,7 @@ bool backMove()
 	castle = history[hply].castle;
 
 	hply++;
+	ply--;
 	return true;
 }
 
