@@ -10,8 +10,8 @@ int quiesceneceSearch(int alpha, int beta);
 int search(int alpha, int beta, int depth);
 
 void ReadBook();
-int searchBook(string s, int index, bool AUTO);
-string getStep(int whichBook, int index, bool AUTO);
+int searchBook(string s, int index);
+string getStep(int whichBook, int index);
 
 
 typedef struct StepSet {

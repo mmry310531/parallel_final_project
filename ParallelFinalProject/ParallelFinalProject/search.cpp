@@ -52,9 +52,8 @@ void ReadBook() {
 
 } // ReadBook()
 
-int searchBook(string s, int index, bool AUTO) { // s : c2c4 index 1
+int searchBook(string s, int index) { 
 	vector<int> gotGame;
-	if (!AUTO) index = index * 2;
 	int k = index;
 	for (int i = 0; i < allGame.size(); i++) {
 		if (index >= allGame[i].thisGame.size()) {
@@ -64,24 +63,16 @@ int searchBook(string s, int index, bool AUTO) { // s : c2c4 index 1
 
 		if (index == 0) gotGame.push_back(i);
 		else  { // 
-			
-			// cout << "temp_step : " << temp_step << endl;
-			// cout << "s         : " << s << endl;
-			if (allGame[i].got ) {
-				if (AUTO) k = index - 1;
-				string temp_step = allGame[i].thisGame[k].step;
-				if (s == temp_step) gotGame.push_back(i);				    
-			} // if
-				
+			int k = index - 1;
+			string temp_step = allGame[i].thisGame[k].step;
+			if (allGame[i].got && s == temp_step) 			
+				gotGame.push_back(i);				    		
 			else
 				allGame[i].got = false;
 		} // else
 	} // for
 
 	if (!gotGame.empty()) {
-		// for (int i = 0; i < gotGame.size(); i++)
-		// 	cout << "got game : " << gotGame[i] << endl;
-
 		srand(time(NULL));
 		int rn = rand() % gotGame.size();
 		return gotGame[rn];
@@ -89,8 +80,7 @@ int searchBook(string s, int index, bool AUTO) { // s : c2c4 index 1
 	else return -1;
 } // searchBook()
 
-string getStep(int whichBook, int index, bool AUTO) {
-	if (!AUTO) index = index * 2 + 1;
+string getStep(int whichBook, int index) {
 	if (index >= allGame[whichBook].thisGame.size()) return "END";
 	string replyMove = allGame[whichBook].thisGame[index].step;
 	cout << "replyMove : " << replyMove << endl;

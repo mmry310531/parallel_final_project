@@ -23,7 +23,6 @@ int main()
 	while (true) {
 		
 		 if (side == COMPUTER_SIDE || AUTO) {
-			 cout << "hply: " << hply << endl;
 			 if (side == WHITE) {
 				 cout << "white move \n";
 			 }
@@ -32,21 +31,15 @@ int main()
 			 }
 
 			 temp_ply = hply - 1;
-			 if (temp_ply == 0 ) whichBook = searchBook("NONE", temp_ply, AUTO);
-			 else if (AUTO) whichBook = searchBook(s_computer, temp_ply, AUTO);
-			 else {
-				 temp_ply = hply / 2 - 1; // 2 4 6 8 
-				 cout << "s: " << s << endl;
-				 whichBook = searchBook(s, temp_ply, false);
-			 } // else  
+			 if (temp_ply == 0 ) whichBook = searchBook("NONE", temp_ply);
+			 else if (AUTO) whichBook = searchBook(s_computer, temp_ply);
+			 else whichBook = searchBook(s, temp_ply);
 
 			 cout << "whichBook: " << whichBook + 1 << endl;
 
-			 if (whichBook + 1) {
-			     if ( AUTO ) s_computer = getStep(whichBook, temp_ply, AUTO).c_str();
-				 else s_computer = getStep(whichBook, temp_ply + 1, AUTO).c_str();
-			 } // if 
-			 cout << "s_computer: " << s_computer << endl;
+			 if (whichBook + 1)
+			     s_computer = getStep(whichBook, temp_ply).c_str();
+			 
 			 
 			 if (whichBook + 1 == 0) {
 				 before_search();
