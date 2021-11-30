@@ -6,11 +6,12 @@
 
 int EvaluateBoard(int board_[2][64]);
 int before_search();
+int quiesceneceSearch(int alpha, int beta);
 int search(int alpha, int beta, int depth);
 
 void ReadBook();
-int searchBook(string s, int hply);
-string getStep(int whichBook, int hply);
+int searchBook(string s, int index, bool AUTO);
+string getStep(int whichBook, int index, bool AUTO);
 
 
 typedef struct StepSet {

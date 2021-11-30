@@ -114,6 +114,7 @@ extern int side;
 extern int xside;
 extern int ply;
 extern int hply;
+extern int ep;
 extern char castle;
 
 extern bool AUTO;

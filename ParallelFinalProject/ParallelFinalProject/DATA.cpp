@@ -16,6 +16,7 @@ int side;
 int xside;
 int ply;
 int hply;
+int ep;
 char castle;
 bool AUTO;
 

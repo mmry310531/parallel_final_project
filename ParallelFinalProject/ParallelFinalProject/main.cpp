@@ -12,6 +12,8 @@ int main()
 	MoveByte move;
 	char s[256];
 	int thread_num = 0;
+	string s_computer = "";
+	int whichBook, temp_ply;
 	AUTO = true;
 	side = PLAYER_SIDE;
 	xside = COMPUTER_SIDE;
@@ -21,24 +23,61 @@ int main()
 	while (true) {
 		
 		 if (side == COMPUTER_SIDE || AUTO) {
-			 
+			 cout << "hply: " << hply << endl;
 			 if (side == WHITE) {
 				 cout << "white move \n";
 			 }
 			 else {
 				 cout << "black move \n";
 			 }
-			 before_search();
-			 makeMove(pv[0][0]);
+
+			 temp_ply = hply - 1;
+			 if (temp_ply == 0 ) whichBook = searchBook("NONE", temp_ply, AUTO);
+			 else if (AUTO) whichBook = searchBook(s_computer, temp_ply, AUTO);
+			 else {
+				 temp_ply = hply / 2 - 1; // 2 4 6 8 
+				 cout << "s: " << s << endl;
+				 whichBook = searchBook(s, temp_ply, false);
+			 } // else  
+
+			 cout << "whichBook: " << whichBook + 1 << endl;
+
+			 if (whichBook + 1) {
+			     if ( AUTO ) s_computer = getStep(whichBook, temp_ply, AUTO).c_str();
+				 else s_computer = getStep(whichBook, temp_ply + 1, AUTO).c_str();
+			 } // if 
+			 cout << "s_computer: " << s_computer << endl;
+			 
+			 if (whichBook + 1 == 0) {
+				 before_search();
+				 makeMove(pv[0][0]);
+				 // cout << "pv[0][0].from" << pv[0][0].from << endl;
+				 // cout << "pv[0][0].to" << pv[0][0].to << endl;
+
+				 s_computer = convertIndex2Readible(pv[0][0].from) + convertIndex2Readible(pv[0][0].to);
+
+				 ply = 0;
+				 generateMove(false);
+				 board_print(board);
+
+				 continue;
+			 }
+			 else { // s : first c2c4
+				 move = ReadMove(s_computer);
+				 bool moveLegal = makeMove(move);
+				 if (moveLegal) {
+				 }
+				 else {
+					 cout << "Illegal Move!\n";
+				 }
+				 ply = 0;
+				 generateMove(false);
+				 board_print(board);
+				 if (AUTO) continue;
+			 }
+
 
 			 
-			 //side ^= 1;
-			 //xside ^= 1;
-			 ply = 0;
-			 generateMove(false);
-			 board_print(board);
-			 
-			 continue;
 
 		 }
 

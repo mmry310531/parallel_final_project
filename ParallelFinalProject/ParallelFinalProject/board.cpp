@@ -131,9 +131,9 @@ MoveByte ReadMove(string s) {
 		//	cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
 		//}
 		//cout << "first Move Num " << first_move[1] << endl;
-		for (int i = 0; i < first_move[1]; ++i) {
-			cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
-		}
+		// for (int i = 0; i < first_move[1]; ++i) {
+		// 	cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		// }
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
 			// cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
@@ -168,7 +168,6 @@ bool makeMove(MoveByte moveByte)
 	bool Pass = false;
 	//int piece = board[BPiece][moveByte.from];
 	int color = board[BColor][moveByte.from];
-	int ep;
 	if (hply != 0) ep = history[hply - 1].ep;
 
 	if (board[BPiece][from] == ROOK) {
@@ -399,7 +398,7 @@ void generateMove(bool search)
 			// TODO
 
 			// handle pawn
-			int ep = history[hply - 1].ep;
+			ep = history[hply - 1].ep;
 
 			if (board[BPiece][square] == PAWN) {
 				if (side == WHITE) {
@@ -531,7 +530,9 @@ bool backMove()
 			board[i][j] = history[hply].board[i][j];
 		}
 	}
+	
 	castle = history[hply].castle;
+	ep = history[hply].ep;
 
 	side ^= 1;
 	xside ^= 1;
@@ -658,25 +659,25 @@ string convertIndex2Readible(int square)
 
 	switch (col) {
 	case 0:
-		square_s += "A";
+		square_s += "a";
 		break;
 	case 1:
-		square_s += "B";
+		square_s += "b";
 		break;
 	case 2:
-		square_s += "C";
+		square_s += "c";
 		break;
 	case 3:
-		square_s += "D";
+		square_s += "d";
 		break;
 	case 4:
-		square_s += "E";
+		square_s += "e";
 		break;
 	case 5:
-		square_s += "F";
+		square_s += "f";
 		break;
 	case 6:
-		square_s += "G";
+		square_s += "g";
 		break;
 	case 7:
 		square_s += "H";
