@@ -1,8 +1,7 @@
-#include "DATA.h"
+﻿#include "DATA.h"
 #include "board.h"
 #include "Def.h"
-#include <iostream>
-using namespace std;
+
 
 
 int board_init()
@@ -27,7 +26,9 @@ int board_init()
 
 int board_print(int board_[2][64])
 {
+	cout << "    A  B  C  D  E  F  G  H\n\n";
 	for (int i = 0; i < 8; ++i) {
+		cout << (8 - i) << "   ";
 		for (int j = 0; j < 8; ++j) {
 			if (board_[BPiece][8 * i + j] == KING) {
 				if (board_[BColor][8 * i + j] == WHITE) {
@@ -86,6 +87,7 @@ int board_print(int board_[2][64])
 		}
 		cout << "\n";
 	}
+	cout << "\n    A  B  C  D  E  F  G  H\n";
 	return 0;
 }
 
@@ -234,7 +236,14 @@ bool makeMove(MoveByte moveByte)
 		board[BPiece][ep] = NONE;
 		board[BColor][ep] = NONE;
 	} // if
-	board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
+
+	if (moveByte.promote > 1) {
+		board[BPiece][moveByte.to] = moveByte.promote;
+	}
+	else {
+		board[BPiece][moveByte.to] = board[BPiece][moveByte.from];
+	}
+	
 	board[BColor][moveByte.to] = side;
 
 	board[BPiece][moveByte.from] = NONE;
@@ -256,19 +265,22 @@ bool makeMove(MoveByte moveByte)
 
 	history[hply].castle = castle;
 
+	side ^= 1;
+	xside ^= 1;
 	hply++;
 	ply++;
 	if (in_check(side)) {
 		backMove();
 		return false;
 	}
+	
 	return true;
 }
 
 void generateMove(bool search)
 {
-	cout << "side " << side << "ply : " << ply << endl;
-	board_print(board);
+	//cout << "side " << side << "ply : " << ply << endl;
+	//board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
 	for (int square = 0; square < 64; ++square) {
@@ -400,7 +412,7 @@ void generateMove(bool search)
 
 					if (board[BColor][square - 8] == NONE) {
 						push_moveable_piece(search, square, (square - 8), NONE, NONE, false, false, true, false);
-						if (board[BPiece][square - 16] && square >= 48) {
+						if (board[BPiece][square - 16] == NONE && square >= 48) {
 							push_moveable_piece(search, square, (square - 16), NONE, NONE, false, false, true, true);
 						}
 					}
@@ -425,7 +437,7 @@ void generateMove(bool search)
 
 					if (board[BColor][square + 8] == NONE) {
 						push_moveable_piece(search, square, (square + 8), NONE, NONE, false, false, true, false);
-						if (board[BPiece][square + 16] && square <= 15) {
+						if (board[BPiece][square + 16] == NONE && square <= 15) {
 							push_moveable_piece(search, square, (square + 16), NONE, NONE, false, false, true, true);
 						}
 					}
@@ -521,7 +533,10 @@ bool backMove()
 	}
 	castle = history[hply].castle;
 
+	side ^= 1;
+	xside ^= 1;
 	hply++;
+	ply--;
 	return true;
 }
 

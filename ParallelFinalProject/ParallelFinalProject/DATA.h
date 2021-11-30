@@ -15,6 +15,8 @@
 #define ROOK 5
 #define PAWN 6
 
+
+
 #define BColor 0
 #define BPiece 1
 #define NONE -1
@@ -105,9 +107,9 @@ extern int board[2][64];
 extern Hist_t history[1024];
 extern MoveByte_set gen_dat[4096];
 extern int first_move[32];
-extern MoveByte bestMove;
+extern MoveByte pv[32][32];
+extern int pv_length[32];
 extern int bestEval;
-extern int pv[32][32];
 extern int side;
 extern int xside;
 extern int ply;
@@ -116,9 +118,15 @@ extern char castle;
 
 extern bool AUTO;
 
-
+extern int node;
 
 extern int NumSquaresToEdge[64][8];
 extern int NumSquareToKnight[8];
 extern int numSquareToKnight_index;
 
+extern const int pawn_score[64];
+extern const int knight_score[64];
+extern const int bishop_score[64];
+extern const int rook_score[64];
+extern const int king_score[64];
+extern const int flip[64];

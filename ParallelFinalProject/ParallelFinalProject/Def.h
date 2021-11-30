@@ -1,5 +1,5 @@
 #pragma once
-#pragma warning
+#pragma warning 4996
 
 
 // 1	capture
