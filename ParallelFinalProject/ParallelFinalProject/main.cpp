@@ -12,7 +12,7 @@ int main()
 	MoveByte move;
 	char s[256];
 	int thread_num = 0;
-	AUTO = true;
+	AUTO = 1 ;
 	side = PLAYER_SIDE;
 	xside = COMPUTER_SIDE;
 	board_init();
@@ -20,15 +20,16 @@ int main()
 	ReadBook();
 	while (true) {
 		
-		 if (side == COMPUTER_SIDE || AUTO) {
-			 
+	if (side == COMPUTER_SIDE || AUTO) {
 			 if (side == WHITE) {
 				 cout << "white move \n";
 			 }
 			 else {
 				 cout << "black move \n";
 			 }
+			 cout << "castle: " << (int)castle << endl;
 			 before_search();
+			 cout << convertIndex2Readible(pv[0][0].from) << ", " << convertIndex2Readible(pv[0][0].to) << endl;
 			 makeMove(pv[0][0]);
 
 			 
@@ -37,7 +38,7 @@ int main()
 			 ply = 0;
 			 generateMove(false);
 			 board_print(board);
-			 
+			 //board_print_color(board);
 			 continue;
 
 		 }

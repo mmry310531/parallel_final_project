@@ -3,6 +3,7 @@
 using namespace std;
 int board_init();
 int board_print(int board_[2][64]);
+int board_print_color(int board_[2][64]);
 MoveByte ReadMove(string s);
 bool makeMove(MoveByte movebyte);
 void generateMove(bool search);

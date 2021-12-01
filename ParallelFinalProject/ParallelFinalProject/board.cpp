@@ -7,6 +7,7 @@
 int board_init()
 {
 	side = WHITE;
+	xside = BLACK;
 	ply = 0;
 	hply = 0;
 	castle |= char(15); // four castle ways
@@ -90,7 +91,72 @@ int board_print(int board_[2][64])
 	cout << "\n    A  B  C  D  E  F  G  H\n";
 	return 0;
 }
-
+int board_print_color(int board_[2][64])
+{
+	cout << "    A  B  C  D  E  F  G  H\n\n";
+	for (int i = 0; i < 8; ++i) {
+		cout << (8 - i) << "   ";
+		for (int j = 0; j < 8; ++j) {
+			if (board_[BPiece][8 * i + j] == KING) {
+				if (board_[BColor][8 * i + j] == WHITE) {
+					cout << "1";
+				}
+				else {
+					cout << "0";
+				}
+			}
+			else if (board_[BPiece][8 * i + j] == QUEEN) {
+				if (board_[BColor][8 * i + j] == WHITE) {
+					cout << "1";
+				}
+				else {
+					cout << "0";
+				}
+			}
+			else if (board_[BPiece][8 * i + j] == BISHOP) {
+				if (board_[BColor][8 * i + j] == 0) {
+					cout << "1";
+				}
+				else {
+					cout << "0";
+				}
+			}
+			else if (board_[BPiece][8 * i + j] == KNIGHT) {
+				if (board_[BColor][8 * i + j] == WHITE) {
+					cout << "1";
+				}
+				else {
+					cout << "0";
+				}
+			}
+			else if (board_[BPiece][8 * i + j] == ROOK) {
+				if (board_[BColor][8 * i + j] == WHITE) {
+					cout << "1";
+				}
+				else {
+					cout << "0";
+				}
+			}
+			else if (board_[BPiece][8 * i + j] == PAWN) {
+				if (board_[BColor][8 * i + j] == WHITE) {
+					cout << "1";
+				}
+				else {
+					cout << "0";
+				}
+			}
+			else {
+				cout << ".";
+			}
+			if (j != (8 - 1)) {
+				cout << "  ";
+			}
+		}
+		cout << "\n";
+	}
+	cout << "\n    A  B  C  D  E  F  G  H\n";
+	return 0;
+}
 MoveByte ReadMove(string s) {
 	MoveByte mb;
 	int from, to, piece, promote, color;
@@ -123,11 +189,10 @@ MoveByte ReadMove(string s) {
 			}
 			else {
 				promote = QUEEN;
-				// shouldn't be here
 			}
 		}
 
-		// for debug
+		// for debug##
 		for (int i = 0; i < first_move[1]; ++i) {
 			cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
 		}
@@ -181,8 +246,8 @@ bool makeMove(MoveByte moveByte)
 			castle &= char(7); // 0111
 		}
 	}
-	else if (board[BPiece][from] == KING) {
-
+	//else if (board[BPiece][from] == KING) {
+	else if (moveByte.castle != false) {
 		if (from == E1) {
 			if (moveByte.castle == 1) {
 				if (in_check(side)) return false;
@@ -263,9 +328,10 @@ bool makeMove(MoveByte moveByte)
 
 	side ^= 1;
 	xside ^= 1;
+	//cout << "side : " << side << "xside : " << xside << endl;
 	hply++;
 	ply++;
-	if (in_check(side)) {
+	if (in_check(xside)) {
 		backMove();
 		return false;
 	}
@@ -343,11 +409,17 @@ void generateMove(bool search)
 				for (int i = 0; i < 8; ++i) {
 					int TargetSquare = square + move_offset[i];
 					if (TargetSquare >= 0 && TargetSquare < 64 && board[BColor][TargetSquare] != side) {
-						if (board[BColor][TargetSquare] == xside) {
-							push_moveable_piece(search, square, TargetSquare, false, false, true, false, false, false);
-						}
-						else {
-							push_moveable_piece(search, square, TargetSquare, false, false, false, false, false, false);
+						int TargetCol = COL(TargetSquare);
+						int TargetRow = ROW(TargetSquare);
+						int c = std::abs(COL(square) - TargetCol);
+						int r = std::abs(ROW(square) - TargetRow);
+						if (c<=1 && r<= 1) {
+							if (board[BColor][TargetSquare] == xside) {
+								push_moveable_piece(search, square, TargetSquare, false, false, true, false, false, false);
+							}
+							else {
+								push_moveable_piece(search, square, TargetSquare, false, false, false, false, false, false);
+							}
 						}
 					}
 				}
@@ -563,19 +635,19 @@ void PreComputeMove() {
 
 }
 
-bool in_check(int side) {
+bool in_check(int s) {
 	for (int i = 0; i < 64; i++) {
-		if (board[BColor][i] == side && board[BPiece][i] == KING)
-			return attack(i, side ^ 1);
+		if (board[BColor][i] == s && board[BPiece][i] == KING)
+			return attack(i, s ^ 1);
 	}
-	return false;
+	return true;
 }
 
-bool attack(int square, int xside) {
+bool attack(int square, int x) {
 	PreComputeMove(); //need this one?
-	int i, j, n;
+
 	for (int i = 0; i < 64; i++) {
-		if (board[BColor][i] == xside) {
+		if (board[BColor][i] == x) {
 			//
 
 			if (board[BPiece][i] == PAWN) {
@@ -609,7 +681,7 @@ bool attack(int square, int xside) {
 				for (int direction = start_n; direction < end_n; ++direction) {
 					for (int n = 0; n < NumSquaresToEdge[i][direction]; ++n) {
 						int targetSquare = i + move_offset[direction] * (n + 1);
-						if (board[BColor][targetSquare] == xside) break;
+						if ((board[BColor][targetSquare] == 0 || board[BColor][targetSquare] == 1) && targetSquare != square) break;
 						if (targetSquare == square) {
 							return true;
 						}

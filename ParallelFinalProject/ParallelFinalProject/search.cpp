@@ -103,6 +103,7 @@ int quiesceneceSearch(int alpha, int beta) {
 	if (score > beta) return beta;
 	if (score > alpha) alpha = score;
 	generateMove(true);
+
 	if (node > 1023)
 		return score;
 	node++;
@@ -155,10 +156,9 @@ int search(int alpha, int beta, int depth) {
 
 	if (ply >= (32 - 1))
 		return EvaluateBoard(board);
-	
+		
 	if (in_check(side)) {
 		Check = true;
-		depth++;
 	}
 	cutoff = false;
 	generateMove(false);
@@ -177,6 +177,11 @@ int search(int alpha, int beta, int depth) {
 			alpha = score;
 
 			pv[ply][ply] = gen_dat[i].movebyte;
+			// loop over the next ply
+			for (int next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
+				pv[ply][next_ply] = pv[ply + 1][next_ply];
+			}
+			pv_length[ply] = pv_length[ply + 1];
 
 		}
 		
