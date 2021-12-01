@@ -7,7 +7,6 @@
 int board_init()
 {
 	side = WHITE;
-	xside = BLACK;
 	ply = 0;
 	hply = 0;
 	castle |= char(15); // four castle ways
@@ -91,72 +90,7 @@ int board_print(int board_[2][64])
 	cout << "\n    A  B  C  D  E  F  G  H\n";
 	return 0;
 }
-int board_print_color(int board_[2][64])
-{
-	cout << "    A  B  C  D  E  F  G  H\n\n";
-	for (int i = 0; i < 8; ++i) {
-		cout << (8 - i) << "   ";
-		for (int j = 0; j < 8; ++j) {
-			if (board_[BPiece][8 * i + j] == KING) {
-				if (board_[BColor][8 * i + j] == WHITE) {
-					cout << "1";
-				}
-				else {
-					cout << "0";
-				}
-			}
-			else if (board_[BPiece][8 * i + j] == QUEEN) {
-				if (board_[BColor][8 * i + j] == WHITE) {
-					cout << "1";
-				}
-				else {
-					cout << "0";
-				}
-			}
-			else if (board_[BPiece][8 * i + j] == BISHOP) {
-				if (board_[BColor][8 * i + j] == 0) {
-					cout << "1";
-				}
-				else {
-					cout << "0";
-				}
-			}
-			else if (board_[BPiece][8 * i + j] == KNIGHT) {
-				if (board_[BColor][8 * i + j] == WHITE) {
-					cout << "1";
-				}
-				else {
-					cout << "0";
-				}
-			}
-			else if (board_[BPiece][8 * i + j] == ROOK) {
-				if (board_[BColor][8 * i + j] == WHITE) {
-					cout << "1";
-				}
-				else {
-					cout << "0";
-				}
-			}
-			else if (board_[BPiece][8 * i + j] == PAWN) {
-				if (board_[BColor][8 * i + j] == WHITE) {
-					cout << "1";
-				}
-				else {
-					cout << "0";
-				}
-			}
-			else {
-				cout << ".";
-			}
-			if (j != (8 - 1)) {
-				cout << "  ";
-			}
-		}
-		cout << "\n";
-	}
-	cout << "\n    A  B  C  D  E  F  G  H\n";
-	return 0;
-}
+
 MoveByte ReadMove(string s) {
 	MoveByte mb;
 	int from, to, piece, promote, color;
@@ -189,15 +123,20 @@ MoveByte ReadMove(string s) {
 			}
 			else {
 				promote = QUEEN;
+				// shouldn't be here
 			}
 		}
-
-		// for debug##
-		for (int i = 0; i < first_move[1]; ++i) {
-			cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
-		}
+		// for debug
+		//for (int i = 0; i < first_move[1]; ++i) {
+		//	cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+		//}
+		//cout << "first Move Num " << first_move[1] << endl;
+		// for (int i = 0; i < first_move[1]; ++i) {
+		// 	cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
+		// }
 		//cout << "first Move Num " << first_move[1] << endl;
 		for (int i = 0; i < first_move[1]; ++i) {
+			// cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
 
 				mb.from = from;
@@ -229,7 +168,6 @@ bool makeMove(MoveByte moveByte)
 	bool Pass = false;
 	//int piece = board[BPiece][moveByte.from];
 	int color = board[BColor][moveByte.from];
-	int ep;
 	if (hply != 0) ep = history[hply - 1].ep;
 
 	if (board[BPiece][from] == ROOK) {
@@ -246,8 +184,8 @@ bool makeMove(MoveByte moveByte)
 			castle &= char(7); // 0111
 		}
 	}
-	//else if (board[BPiece][from] == KING) {
-	else if (moveByte.castle != false) {
+	else if (board[BPiece][from] == KING) {
+
 		if (from == E1) {
 			if (moveByte.castle == 1) {
 				if (in_check(side)) return false;
@@ -328,10 +266,9 @@ bool makeMove(MoveByte moveByte)
 
 	side ^= 1;
 	xside ^= 1;
-	//cout << "side : " << side << "xside : " << xside << endl;
 	hply++;
 	ply++;
-	if (in_check(xside)) {
+	if (in_check(side)) {
 		backMove();
 		return false;
 	}
@@ -409,17 +346,11 @@ void generateMove(bool search)
 				for (int i = 0; i < 8; ++i) {
 					int TargetSquare = square + move_offset[i];
 					if (TargetSquare >= 0 && TargetSquare < 64 && board[BColor][TargetSquare] != side) {
-						int TargetCol = COL(TargetSquare);
-						int TargetRow = ROW(TargetSquare);
-						int c = std::abs(COL(square) - TargetCol);
-						int r = std::abs(ROW(square) - TargetRow);
-						if (c<=1 && r<= 1) {
-							if (board[BColor][TargetSquare] == xside) {
-								push_moveable_piece(search, square, TargetSquare, false, false, true, false, false, false);
-							}
-							else {
-								push_moveable_piece(search, square, TargetSquare, false, false, false, false, false, false);
-							}
+						if (board[BColor][TargetSquare] == xside) {
+							push_moveable_piece(search, square, TargetSquare, false, false, true, false, false, false);
+						}
+						else {
+							push_moveable_piece(search, square, TargetSquare, false, false, false, false, false, false);
 						}
 					}
 				}
@@ -467,7 +398,7 @@ void generateMove(bool search)
 			// TODO
 
 			// handle pawn
-			int ep = history[hply - 1].ep;
+			ep = history[hply - 1].ep;
 
 			if (board[BPiece][square] == PAWN) {
 				if (side == WHITE) {
@@ -599,7 +530,9 @@ bool backMove()
 			board[i][j] = history[hply].board[i][j];
 		}
 	}
+	
 	castle = history[hply].castle;
+	ep = history[hply].ep;
 
 	side ^= 1;
 	xside ^= 1;
@@ -635,19 +568,19 @@ void PreComputeMove() {
 
 }
 
-bool in_check(int s) {
+bool in_check(int side) {
 	for (int i = 0; i < 64; i++) {
-		if (board[BColor][i] == s && board[BPiece][i] == KING)
-			return attack(i, s ^ 1);
+		if (board[BColor][i] == side && board[BPiece][i] == KING)
+			return attack(i, side ^ 1);
 	}
-	return true;
+	return false;
 }
 
-bool attack(int square, int x) {
+bool attack(int square, int xside) {
 	PreComputeMove(); //need this one?
-
+	int i, j, n;
 	for (int i = 0; i < 64; i++) {
-		if (board[BColor][i] == x) {
+		if (board[BColor][i] == xside) {
 			//
 
 			if (board[BPiece][i] == PAWN) {
@@ -681,7 +614,7 @@ bool attack(int square, int x) {
 				for (int direction = start_n; direction < end_n; ++direction) {
 					for (int n = 0; n < NumSquaresToEdge[i][direction]; ++n) {
 						int targetSquare = i + move_offset[direction] * (n + 1);
-						if ((board[BColor][targetSquare] == 0 || board[BColor][targetSquare] == 1) && targetSquare != square) break;
+						if (board[BColor][targetSquare] == xside) break;
 						if (targetSquare == square) {
 							return true;
 						}
@@ -726,25 +659,25 @@ string convertIndex2Readible(int square)
 
 	switch (col) {
 	case 0:
-		square_s += "A";
+		square_s += "a";
 		break;
 	case 1:
-		square_s += "B";
+		square_s += "b";
 		break;
 	case 2:
-		square_s += "C";
+		square_s += "c";
 		break;
 	case 3:
-		square_s += "D";
+		square_s += "d";
 		break;
 	case 4:
-		square_s += "E";
+		square_s += "e";
 		break;
 	case 5:
-		square_s += "F";
+		square_s += "f";
 		break;
 	case 6:
-		square_s += "G";
+		square_s += "g";
 		break;
 	case 7:
 		square_s += "H";
