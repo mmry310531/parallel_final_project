@@ -29,8 +29,11 @@ int main()
 			 }
 			 cout << "castle: " << (int)castle << endl;
 			 before_search();
-			 cout << convertIndex2Readible(pv[0][0].from) << ", " << convertIndex2Readible(pv[0][0].to) << endl;
-			 makeMove(pv[0][0]);
+			 
+			 if (!makeMove(pv[0][0])) {
+				 AUTO = false;
+				 cout << "game over\n";
+			 }
 
 			 
 			 //side ^= 1;
