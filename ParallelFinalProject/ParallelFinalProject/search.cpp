@@ -16,7 +16,6 @@ void ReadBook() {
 	string read_line;
 	string token;
 
-
 	while (getline(tempin, read_line)) {
 		if (read_line == "") continue;
 
@@ -52,7 +51,7 @@ void ReadBook() {
 
 } // ReadBook()
 
-int searchBook(string s, int index) { 
+int searchBook(string s, int index) {
 	vector<int> gotGame;
 	int k = index;
 	for (int i = 0; i < allGame.size(); i++) {
@@ -62,11 +61,11 @@ int searchBook(string s, int index) {
 		} // if 
 
 		if (index == 0) gotGame.push_back(i);
-		else  { // 
+		else { // 
 			int k = index - 1;
 			string temp_step = allGame[i].thisGame[k].step;
-			if (allGame[i].got && s == temp_step) 			
-				gotGame.push_back(i);				    		
+			if (allGame[i].got && s == temp_step)
+				gotGame.push_back(i);
 			else
 				allGame[i].got = false;
 		} // else

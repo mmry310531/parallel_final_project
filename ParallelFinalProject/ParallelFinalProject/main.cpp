@@ -12,7 +12,9 @@ int main()
 	MoveByte move;
 	char s[256];
 	int thread_num = 0;
-	AUTO = 1 ;
+	string s_computer = "";
+	int whichBook, temp_ply;
+	AUTO = true ;
 	side = PLAYER_SIDE;
 	xside = COMPUTER_SIDE;
 	board_init();
@@ -27,23 +29,48 @@ int main()
 			 else {
 				 cout << "black move \n";
 			 }
-			 cout << "castle: " << (int)castle << endl;
-			 before_search();
-			 
-			 if (!makeMove(pv[0][0])) {
-				 AUTO = false;
-				 side = PLAYER_SIDE;
-				 cout << "game over\n";
-			 }
 
+			 temp_ply = hply - 1;
+			 if (temp_ply == 0) whichBook = searchBook("NONE", temp_ply);
+			 else if (AUTO) whichBook = searchBook(s_computer, temp_ply);
+			 else whichBook = searchBook(s, temp_ply);
+
+			 cout << "whichBook: " << whichBook + 1 << endl;
+
+			 if (whichBook + 1)
+				 s_computer = getStep(whichBook, temp_ply).c_str();
+
+
+			 if (whichBook + 1 == 0) {
+				 cout << "castle: " << (int)castle << endl;
+				 before_search();
+
+				 if (!makeMove(pv[0][0])) {
+					 AUTO = false;
+					 side = PLAYER_SIDE;
+					 cout << "game over\n";
+				 }
+
+				 ply = 0;
+				 generateMove(false);
+				 board_print(board);
+				 //board_print_color(board);
+				 continue;
+			 }
+			 else { // s : first c2c4
+				 move = ReadMove(s_computer);
+				 bool moveLegal = makeMove(move);
+				 if (moveLegal) {
+				 }
+				 else {
+					 cout << "Illegal Move!\n";
+				 }
+				 ply = 0;
+				 generateMove(false);
+				 board_print(board);
+				 if (AUTO) continue;
+			 }
 			 
-			 //side ^= 1;
-			 //xside ^= 1;
-			 ply = 0;
-			 generateMove(false);
-			 board_print(board);
-			 //board_print_color(board);
-			 continue;
 
 		 }
 
