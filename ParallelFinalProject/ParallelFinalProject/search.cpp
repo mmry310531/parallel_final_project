@@ -183,7 +183,7 @@ int quiesceneceSearch(int alpha, int beta) {
 }
 
 
-// pvs
+
 int search(int alpha, int beta, int depth) {
 
 
@@ -296,7 +296,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 			return beta;
 		if (score > alpha) {
 			alpha = score;
-			bSearchPv = true;
+			bSearchPv = false;
 
 			pv[ply][ply] = gen_dat[i].movebyte;
 			// loop over the next ply
