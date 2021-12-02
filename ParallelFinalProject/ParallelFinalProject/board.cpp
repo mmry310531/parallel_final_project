@@ -18,6 +18,8 @@ int board_init()
 	for (int i = 0; i < 2; i++) {
 		for (int j = 0; j < 64; j++) {
 			history[hply].board[i][j] = board[i][j];
+			history[hply].castle = castle;
+			//history[hply].ep = ep;
 		}
 	}
 	hply++;

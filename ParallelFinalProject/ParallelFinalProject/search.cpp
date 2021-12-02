@@ -134,7 +134,7 @@ int before_search( ) {
 	memset(pv, 0, sizeof(pv));
 	
 	for (int i = 5; i <= 5; ++i) {
-		score = search(-99999, 99999, i);
+		score = PVSsearch(-99999, 99999, i);
 	}
 
 
@@ -235,6 +235,80 @@ int search(int alpha, int beta, int depth) {
 		
 	}
 	
+	if (NoLegalMove) {
+		if (Check)
+			return -49999 + ply;
+		else
+			return 0;
+	}
+	return alpha;
+
+
+}
+
+// pvs
+int PVSsearch(int alpha, int beta, int depth) {
+
+
+	if (!depth)
+		return quiesceneceSearch(alpha, beta);
+	node++;
+
+	bool bSearchPv = true;
+	bool NoLegalMove = true;
+	bool Check = false;
+	int score = 0;
+	pv_length[ply] = ply;
+	//	draw
+	// if(hply != 0){
+	//		if(three times same board){
+	//			return 0
+	//
+	//
+	//https://www.chessprogramming.org/Principal_Variation_Search
+	if (ply >= (32 - 1))
+		return EvaluateBoard(board);
+
+	if (in_check(side)) {
+		Check = true;
+	}
+	cutoff = false;
+	generateMove(false);
+	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+		// sort move to make cutoff condition before
+		// sort()
+		bool legalMove = makeMove(gen_dat[i].movebyte);
+		if (!legalMove)
+			continue;
+		NoLegalMove = false;
+		if (bSearchPv) {
+			score = -PVSsearch(-beta, -alpha, depth - 1);
+		}
+		else {
+			score = -PVSsearch(-beta, -alpha, depth - 1);
+			if (score > alpha) {
+				score = -PVSsearch(-beta, -alpha, depth - 1);
+			}
+		}
+		
+		backMove();
+		if (score >= beta)
+			return beta;
+		if (score > alpha) {
+			alpha = score;
+			bSearchPv = true;
+
+			pv[ply][ply] = gen_dat[i].movebyte;
+			// loop over the next ply
+			for (int next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
+				pv[ply][next_ply] = pv[ply + 1][next_ply];
+			}
+			pv_length[ply] = pv_length[ply + 1];
+
+		}
+
+	}
+
 	if (NoLegalMove) {
 		if (Check)
 			return -49999 + ply;

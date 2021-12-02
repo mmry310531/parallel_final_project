@@ -32,6 +32,7 @@ int main()
 			 
 			 if (!makeMove(pv[0][0])) {
 				 AUTO = false;
+				 side = PLAYER_SIDE;
 				 cout << "game over\n";
 			 }
 
