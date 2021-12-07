@@ -41,14 +41,18 @@ int main()
 				 s_computer = getStep(whichBook, temp_ply).c_str();
 
 
-			 if (whichBook + 1 == 0) {
+			 //if (whichBook + 1 == 0) {
+			 if (true) {
 				 cout << "castle: " << (int)castle << endl;
 				 before_search();
-
-				 if (!makeMove(pv[0][0])) {
+				 bool legalMove = makeMove(pv[0][0]);
+				 if (!legalMove) {
 					 AUTO = false;
 					 side = PLAYER_SIDE;
 					 cout << "game over\n";
+				 }
+				 else {
+					 cout << convertIndex2Readible(pv[0][0].from) << ", " << convertIndex2Readible(pv[0][0].to) << endl;
 				 }
 
 				 ply = 0;

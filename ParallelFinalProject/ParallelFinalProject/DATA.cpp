@@ -2,22 +2,24 @@
 #include "Def.h"
 
 
-int board[2][64];
-Hist_t history[1024];
+__declspec(thread) int board[2][64];
+__declspec(thread) Hist_t history[1024];
 
-MoveByte_set gen_dat[4096];
+__declspec(thread) MoveByte_set gen_dat[4096];
 
-int first_move[32];
-MoveByte pv[32][32];
-int pv_length[32];
+__declspec(thread) int first_move[32];
+__declspec(thread) MoveByte pv[32][32];
+__declspec(thread) int pv_length[32];
+__declspec(thread) int side;
+__declspec(thread) int xside;
+__declspec(thread) int ply;
+__declspec(thread) int hply;
+__declspec(thread) int ep;
+__declspec(thread) char castle;
+
 MoveByte bestMove;
 int bestEval;
-int side;
-int xside;
-int ply;
-int hply;
-int ep;
-char castle;
+
 bool AUTO;
 
 int node;

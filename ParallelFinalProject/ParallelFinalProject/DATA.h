@@ -103,19 +103,21 @@ extern int init_piece[64];
 extern int move_offset[8];
 extern int knight_jump[8];
 // dynamic
-extern int board[2][64];
-extern Hist_t history[1024];
-extern MoveByte_set gen_dat[4096];
-extern int first_move[32];
-extern MoveByte pv[32][32];
-extern int pv_length[32];
+extern __declspec(thread) int board[2][64];
+extern __declspec(thread) Hist_t history[1024];
+extern __declspec(thread) int side;
+extern __declspec(thread) int xside;
+extern __declspec(thread) int ply;
+extern __declspec(thread) int hply;
+extern __declspec(thread) int ep;
+extern __declspec(thread) char castle;
+extern __declspec(thread) MoveByte_set gen_dat[4096];
+extern __declspec(thread) int first_move[32];
+extern __declspec(thread) MoveByte pv[32][32];
+extern __declspec(thread) int pv_length[32];
+
 extern int bestEval;
-extern int side;
-extern int xside;
-extern int ply;
-extern int hply;
-extern int ep;
-extern char castle;
+
 
 extern bool AUTO;
 

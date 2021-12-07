@@ -9,12 +9,17 @@
 #include "DATA.h"
 vector<StepSet> oneGame;
 vector<GameSet> allGame;
+extern __declspec(thread) int board[2][64];
+extern __declspec(thread) Hist_t history[1024];
+extern __declspec(thread) int side, xside, ep, ply, hply;
+extern __declspec(thread) char castle;
+extern __declspec(thread) MoveByte_set gen_dat[4096];
+extern __declspec(thread) int first_move[32];
+extern __declspec(thread) MoveByte pv[32][32];
+extern __declspec(thread) int pv_length[32];
 
 
-#pragma omp threadprivate(board)
-#pragma omp threadprivate(side, xside, history, ep, castle, ply, hply)
-#pragma omp threadprivate(gen_dat, first_move)
-#pragma omp threadprivate(pv, pv_length)
+
 
 
 
