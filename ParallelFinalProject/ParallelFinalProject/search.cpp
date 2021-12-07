@@ -10,6 +10,14 @@
 vector<StepSet> oneGame;
 vector<GameSet> allGame;
 
+
+#pragma omp threadprivate(board)
+#pragma omp threadprivate(side, xside, history, ep, castle, ply, hply)
+#pragma omp threadprivate(gen_dat, first_move)
+#pragma omp threadprivate(pv, pv_length)
+
+
+
 void ReadBook() {
 	ifstream tempin;
 	tempin.open("book.txt");
@@ -225,6 +233,7 @@ int search(int alpha, int beta, int depth) {
 	cutoff = false;
 	generateMove(false);
 
+	
 	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
@@ -274,6 +283,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 	bool Check = false;
 	int score = 0;
 	pv_length[ply] = ply;
+	int i;
 	//	draw
 	// if(hply != 0){
 	//		if(three times same board){
@@ -289,13 +299,16 @@ int PVSsearch(int alpha, int beta, int depth) {
 	}
 	cutoff = false;
 	generateMove(false);
-// #pragma omp single 
-{
-	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+
+	#pragma omp parallel for schedule(dynamic,1) copyin(board, \
+			side, xside, history, ep, castle, ply, hply, \
+			gen_dat, first_move, pv, pv_length) \
+			private(i)
+	for (i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
 		bool legalMove = makeMove(gen_dat[i].movebyte);
-		if (!legalMove)
+		if (!legalMove || cutoff)
 			continue;
 		NoLegalMove = false;
 		if (bSearchPv) {
@@ -303,16 +316,17 @@ int PVSsearch(int alpha, int beta, int depth) {
 		}
 		else {
             // #pragma omp task
+			
 			score = -PVSsearch(-beta, -alpha, depth - 1);
-			if (score > alpha) {
-                // #pragma omp task
-				score = -PVSsearch(-beta, -alpha, depth - 1);
-			}
+			//if (score > alpha) {
+   //             // #pragma omp task
+			//	score = -PVSsearch(-beta, -alpha, depth - 1);
+			//}
 		}
 
 		backMove();
 		if (score >= beta)
-			return beta;
+			cutoff = true;
 		if (score > alpha) {
 			alpha = score;
 			bSearchPv = false;
@@ -326,9 +340,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 			pv_length[ply] = pv_length[ply + 1];
 
 		}
-
 	}
-}
 	if (NoLegalMove) {
 		if (Check)
 			return -49999 + ply;

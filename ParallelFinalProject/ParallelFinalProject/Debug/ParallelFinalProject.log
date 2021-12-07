@@ -1,11 +1,50 @@
-﻿  search.cpp
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 '常數'
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(31,21): warning C4018: '<': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(61,20): warning C4018: '<': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(62,13): warning C4018: '>=': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(79,13): warning C4244: '引數': 將 'time_t' 轉換為 'unsigned int'，由於類型不同，可能導致資料遺失
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(87,12): warning C4018: '>=': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(91,20): warning C4018: '<': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(93,14): warning C4018: '>=': signed/unsigned 不相符
-D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(162,11): warning C4101: 'bestMove': 未參考的區域變數
-  ParallelFinalProject.vcxproj -> D:\NYCU_Master\Parrallel Programming\Final\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe
+﻿  board.cpp
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 '常數'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(5,9): error C3053: 'board': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'history': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'side': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'xside': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'ply': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'hply': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'ep': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(6,9): error C3053: 'castle': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(7,9): error C3053: 'gen_dat': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(7,9): error C3053: 'first_move': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(8,9): error C3053: 'pv': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\board.cpp(8,9): error C3053: 'pv_length': 'threadprivate' 只對全域或靜態資料項目有效
+  main.cpp
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 '常數'
+  search.cpp
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 '常數'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(13,9): error C3053: 'board': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'history': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'side': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'xside': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'ply': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'hply': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'ep': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(14,9): error C3053: 'castle': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(15,9): error C3053: 'gen_dat': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(15,9): error C3053: 'first_move': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(16,9): error C3053: 'pv': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(16,9): error C3053: 'pv_length': 'threadprivate' 只對全域或靜態資料項目有效
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(38,21): warning C4018: '<': signed/unsigned 不相符
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(68,20): warning C4018: '<': signed/unsigned 不相符
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(69,13): warning C4018: '>=': signed/unsigned 不相符
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(86,13): warning C4244: '引數': 將 'time_t' 轉換為 'unsigned int'，由於類型不同，可能導致資料遺失
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(94,12): warning C4018: '>=': signed/unsigned 不相符
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(98,20): warning C4018: '<': signed/unsigned 不相符
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(100,14): warning C4018: '>=': signed/unsigned 不相符
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'board': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'history': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'gen_dat': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'first_move': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'pv': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'pv_length': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'side': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'xside': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'ply': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'hply': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'ep': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\search.cpp(302,10): error C3058: 'castle': 符號使用在 'copyin' 子句之前未宣告為 'threadprivate'
+  正在產生程式碼...
