@@ -3,6 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <omp.h>
 #include "board.h"
 #include "search.h"
 #include "DATA.h"
@@ -16,7 +17,6 @@ void ReadBook() {
 	string read_line;
 	string token;
 
-
 	while (getline(tempin, read_line)) {
 		if (read_line == "") continue;
 
@@ -26,6 +26,8 @@ void ReadBook() {
 			arr.push_back(token);
 		} // 
 		oneGame.clear();
+
+        
 		for (int i = 0; i < arr.size(); i++) {
 			StepSet s1;
 			s1.side = i % 2;
@@ -48,13 +50,14 @@ void ReadBook() {
 	// 	} // for
 	// 	cout << endl;
 
-
+    
 
 } // ReadBook()
 
-int searchBook(string s, int index) { 
+int searchBook(string s, int index) {
 	vector<int> gotGame;
 	int k = index;
+    
 	for (int i = 0; i < allGame.size(); i++) {
 		if (index >= allGame[i].thisGame.size()) {
 			allGame[i].got = false;
@@ -62,11 +65,11 @@ int searchBook(string s, int index) {
 		} // if 
 
 		if (index == 0) gotGame.push_back(i);
-		else  { // 
+		else { // 
 			int k = index - 1;
 			string temp_step = allGame[i].thisGame[k].step;
-			if (allGame[i].got && s == temp_step) 			
-				gotGame.push_back(i);				    		
+			if (allGame[i].got && s == temp_step)
+				gotGame.push_back(i);
 			else
 				allGame[i].got = false;
 		} // else
@@ -84,6 +87,7 @@ string getStep(int whichBook, int index) {
 	if (index >= allGame[whichBook].thisGame.size()) return "END";
 	string replyMove = allGame[whichBook].thisGame[index].step;
 	cout << "replyMove : " << replyMove << endl;
+#pragma omp parallel for
 	for (int i = 0; i < allGame.size(); i++) {
 		if (allGame[i].got) {
 			if (index >= allGame[i].thisGame.size()) continue;
@@ -98,6 +102,7 @@ string getStep(int whichBook, int index) {
 int EvaluateBoard(int board_t[2][64]) {
 	int score_WHITE = 0;
 	int score_BLACK = 0;
+
 	for (int i = 0; i < 64; i++) {
 		if (board_t[BColor][i] == WHITE) {
 			if (board_t[BPiece][i] == QUEEN) { score_WHITE += 900; }
@@ -124,6 +129,12 @@ int EvaluateBoard(int board_t[2][64]) {
 		return score_WHITE - score_BLACK;
 	else
 		return score_BLACK - score_WHITE;
+
+    // #pragma omp parallel
+	// {
+	// 	printf("Hello World... from thread = %d\n", omp_get_thread_num());
+	// }
+
 } // int
 
 bool cutoff;
@@ -132,10 +143,13 @@ int before_search( ) {
 	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
-	
-	for (int i = 5; i <= 5; ++i) {
-		score = PVSsearch(-99999, 99999, i);
+	int depth = 5;
+	// for (int i = 5; i <= 5; ++i) { 
+#pragma omp single
+	{
+		score = PVSsearch(-99999, 99999, depth);
 	}
+		// }
 
 
 	while (ply)
@@ -155,6 +169,7 @@ int quiesceneceSearch(int alpha, int beta) {
 	if (node > 1023)
 		return score;
 	node++;
+// #pragma omp parallel for
 	for (int i = first_move[ply]; i < first_move[ply + 1]; i++) {
 		if (!makeMove(gen_dat[i].movebyte))
 			continue;
@@ -183,7 +198,6 @@ int quiesceneceSearch(int alpha, int beta) {
 }
 
 
-
 int search(int alpha, int beta, int depth) {
 
 
@@ -210,6 +224,7 @@ int search(int alpha, int beta, int depth) {
 	}
 	cutoff = false;
 	generateMove(false);
+
 	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
@@ -226,6 +241,7 @@ int search(int alpha, int beta, int depth) {
 
 			pv[ply][ply] = gen_dat[i].movebyte;
 			// loop over the next ply
+// #pragma omp parallel for // 好像會變慢點
 			for (int next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
 				pv[ply][next_ply] = pv[ply + 1][next_ply];
 			}
@@ -248,7 +264,6 @@ int search(int alpha, int beta, int depth) {
 
 // pvs
 int PVSsearch(int alpha, int beta, int depth) {
-
 
 	if (!depth)
 		return quiesceneceSearch(alpha, beta);
@@ -274,6 +289,8 @@ int PVSsearch(int alpha, int beta, int depth) {
 	}
 	cutoff = false;
 	generateMove(false);
+// #pragma omp single 
+{
 	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
@@ -285,12 +302,14 @@ int PVSsearch(int alpha, int beta, int depth) {
 			score = -PVSsearch(-beta, -alpha, depth - 1);
 		}
 		else {
+            // #pragma omp task
 			score = -PVSsearch(-beta, -alpha, depth - 1);
 			if (score > alpha) {
+                // #pragma omp task
 				score = -PVSsearch(-beta, -alpha, depth - 1);
 			}
 		}
-		
+
 		backMove();
 		if (score >= beta)
 			return beta;
@@ -300,6 +319,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 
 			pv[ply][ply] = gen_dat[i].movebyte;
 			// loop over the next ply
+// #pragma omp parallel for // 好像會變慢點
 			for (int next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
 				pv[ply][next_ply] = pv[ply + 1][next_ply];
 			}
@@ -308,7 +328,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 		}
 
 	}
-
+}
 	if (NoLegalMove) {
 		if (Check)
 			return -49999 + ply;
