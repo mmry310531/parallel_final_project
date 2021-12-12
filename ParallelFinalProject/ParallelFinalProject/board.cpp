@@ -2,6 +2,14 @@
 #include "board.h"
 #include "Def.h"
 
+extern __declspec(thread) int board[2][64];
+extern __declspec(thread) Hist_t history[1024];
+extern __declspec(thread) int side, xside, ep, ply, hply;
+extern __declspec(thread) char castle;
+extern __declspec(thread) MoveByte_set gen_dat[4096];
+extern __declspec(thread) int first_move[32];
+extern __declspec(thread) MoveByte pv[32][32];
+extern __declspec(thread) int pv_length[32];
 
 
 int board_init()

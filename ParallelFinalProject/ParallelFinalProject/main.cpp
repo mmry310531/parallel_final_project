@@ -6,7 +6,6 @@
 using namespace std;
 
 
-
 int main()
 {
 	MoveByte move;
@@ -50,6 +49,7 @@ int main()
 					 AUTO = false;
 					 side = PLAYER_SIDE;
 					 cout << "game over\n";
+					 break;
 				 }
 				 else {
 					 cout << convertIndex2Readible(pv[0][0].from) << ", " << convertIndex2Readible(pv[0][0].to) << endl;

@@ -115,6 +115,9 @@ extern __declspec(thread) MoveByte_set gen_dat[4096];
 extern __declspec(thread) int first_move[32];
 extern __declspec(thread) MoveByte pv[32][32];
 extern __declspec(thread) int pv_length[32];
+extern MoveByte best_pv[32];
+extern int best_pv_length;
+
 
 extern int bestEval;
 

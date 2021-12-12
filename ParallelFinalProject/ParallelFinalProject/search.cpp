@@ -150,7 +150,6 @@ int EvaluateBoard(int board_t[2][64]) {
 
 } // int
 
-bool cutoff;
 
 int before_search( ) {
 	node = 0;
@@ -235,7 +234,6 @@ int search(int alpha, int beta, int depth) {
 	if (in_check(side)) {
 		Check = true;
 	}
-	cutoff = false;
 	generateMove(false);
 
 	
@@ -249,7 +247,7 @@ int search(int alpha, int beta, int depth) {
 		score = -search(-beta, -alpha, depth-1);
 		backMove();
 		if (score >= beta)
-			return beta;
+			return beta; // cutoff
 		if (score > alpha) {
 			alpha = score;
 
@@ -287,8 +285,11 @@ int PVSsearch(int alpha, int beta, int depth) {
 	bool NoLegalMove = true;
 	bool Check = false;
 	int score = 0;
+	bool cutoff = false;
 	pv_length[ply] = ply;
-	int i;
+	best_pv_length = 0;
+	int i, i0;
+	int next_ply;
 	//	draw
 	// if(hply != 0){
 	//		if(three times same board){
@@ -302,49 +303,86 @@ int PVSsearch(int alpha, int beta, int depth) {
 	if (in_check(side)) {
 		Check = true;
 	}
-	cutoff = false;
+	
 	generateMove(false);
+
+	for (i0 = first_move[ply]; i0 < first_move[ply + 1]; ++i0) {
+		if (!makeMove(gen_dat[i0].movebyte))
+			continue;
+		NoLegalMove = false;
+		score = -PVSsearch(-beta, -alpha, depth - 1);
+		backMove();
+		if (score > alpha) {
+			if (score > beta)
+				return beta;
+			alpha = score;
+
+			best_pv[ply] = pv[ply][ply] = gen_dat[i0].movebyte;
+			for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; ++next_ply)
+				best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
+			best_pv_length = pv_length[ply] = pv_length[ply + 1];
+		}
+		i0++;
+		break;
+	}
 
 	#pragma omp parallel for schedule(dynamic,1) copyin(board, \
 			side, xside, history, ep, castle, ply, hply, \
 			gen_dat, first_move, pv, pv_length) \
-			private(i)
+			private(i, next_ply, score)
 	for (i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
 		bool legalMove = makeMove(gen_dat[i].movebyte);
-		if (!legalMove || cutoff)
-			continue;
-		NoLegalMove = false;
-		if (bSearchPv) {
-			score = -PVSsearch(-beta, -alpha, depth - 1);
-		}
-		else {
-            // #pragma omp task
-			
-			score = -PVSsearch(-beta, -alpha, depth - 1);
-			//if (score > alpha) {
-   //             // #pragma omp task
-			//	score = -PVSsearch(-beta, -alpha, depth - 1);
-			//}
-		}
+		score = -search(-beta, -alpha, depth - 1);
+
+		//if (!legalMove || cutoff)
+		//	continue;
+		//NoLegalMove = false;
+		//if (bSearchPv) {
+		//	score = -PVSsearch(-beta, -alpha, depth - 1);
+		//}
+		//else {
+  //          // #pragma omp task
+		//	
+		//	score = -PVSsearch(-beta, -alpha, depth - 1);
+		//	if (score > alpha) {
+  // //             // #pragma omp task
+		//		score = -PVSsearch(-beta, -alpha, depth - 1);
+		//	}
+		//}
 
 		backMove();
-		if (score >= beta)
-			cutoff = true;
-		if (score > alpha) {
-			alpha = score;
-			bSearchPv = false;
+		#pragma omp critical
+		{
+			
+			if (score > alpha && !cutoff) {
+				if (score >= beta)
+					cutoff = true;
+				alpha = score;
+				bSearchPv = false;
 
-			pv[ply][ply] = gen_dat[i].movebyte;
-			// loop over the next ply
-// #pragma omp parallel for // 好像會變慢點
-			for (int next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
-				pv[ply][next_ply] = pv[ply + 1][next_ply];
+
+				best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
+				//pv[ply][ply] = gen_dat[i].movebyte;
+				// loop over the next ply
+				// #pragma omp parallel for // 好像會變慢點
+				for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
+					best_pv[next_ply] =  pv[ply][next_ply] = pv[ply + 1][next_ply];
+				}
+				best_pv_length = pv_length[ply] = pv_length[ply + 1];
+
 			}
-			pv_length[ply] = pv_length[ply + 1];
-
 		}
+	}
+	if (best_pv_length > 0) {
+		pv[ply][ply] = best_pv[ply];
+		for (next_ply = ply + 1; next_ply < best_pv_length; ++next_ply)
+			pv[ply][next_ply] = best_pv[next_ply];
+		pv_length[ply] = best_pv_length;
+	}
+	if (cutoff) {
+		return beta;
 	}
 	if (NoLegalMove) {
 		if (Check)
