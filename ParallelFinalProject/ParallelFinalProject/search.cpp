@@ -157,9 +157,9 @@ int before_search( ) {
 	memset(pv, 0, sizeof(pv));
 	int depth = 5;
 	// for (int i = 5; i <= 5; ++i) { 
-#pragma omp single
+
 	{
-		score = PVSsearch(-99999, 99999, depth);
+		score = search(-99999, 99999, depth);
 	}
 		// }
 
@@ -330,10 +330,13 @@ int PVSsearch(int alpha, int beta, int depth) {
 			side, xside, history, ep, castle, ply, hply, \
 			gen_dat, first_move, pv, pv_length) \
 			private(i, next_ply, score)
-	for (i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+	for (i = i0; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
 		bool legalMove = makeMove(gen_dat[i].movebyte);
+		if (!legalMove || cutoff) {
+			continue;
+		}
 		score = -search(-beta, -alpha, depth - 1);
 
 		//if (!legalMove || cutoff)
@@ -359,19 +362,20 @@ int PVSsearch(int alpha, int beta, int depth) {
 			if (score > alpha && !cutoff) {
 				if (score >= beta)
 					cutoff = true;
-				alpha = score;
-				bSearchPv = false;
+				else {
+					alpha = score;
+					bSearchPv = false;
 
 
-				best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
-				//pv[ply][ply] = gen_dat[i].movebyte;
-				// loop over the next ply
-				// #pragma omp parallel for // 好像會變慢點
-				for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
-					best_pv[next_ply] =  pv[ply][next_ply] = pv[ply + 1][next_ply];
+					best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
+					//pv[ply][ply] = gen_dat[i].movebyte;
+					// loop over the next ply
+					// #pragma omp parallel for // 好像會變慢點
+					for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
+						best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
+					}
+					best_pv_length = pv_length[ply] = pv_length[ply + 1];
 				}
-				best_pv_length = pv_length[ply] = pv_length[ply + 1];
-
 			}
 		}
 	}
