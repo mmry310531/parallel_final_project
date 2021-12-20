@@ -3,11 +3,14 @@
 #include "DATA.h"
 #include "board.h"
 #include "search.h"
+#include <omp.h>
 using namespace std;
 
 
 int main()
 {
+	omp_set_num_threads(4);
+	
 	MoveByte move;
 	char s[256];
 	int thread_num = 0;
@@ -42,7 +45,6 @@ int main()
 
 			 //if (whichBook + 1 == 0) {
 			 if (true) {
-				 cout << "castle: " << (int)castle << endl;
 				 before_search();
 				 bool legalMove = makeMove(pv[0][0]);
 				 if (!legalMove) {

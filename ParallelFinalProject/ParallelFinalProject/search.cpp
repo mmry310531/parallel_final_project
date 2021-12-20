@@ -22,7 +22,6 @@ extern __declspec(thread) int pv_length[32];
 
 
 
-
 void ReadBook() {
 	ifstream tempin;
 	tempin.open("book.txt");
@@ -152,6 +151,7 @@ int EvaluateBoard(int board_t[2][64]) {
 
 
 int before_search( ) {
+	omp_set_num_threads(8);
 	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
@@ -180,6 +180,8 @@ int quiesceneceSearch(int alpha, int beta) {
 
 	if (node > 1023)
 		return score;
+
+#pragma omp atomic
 	node++;
 // #pragma omp parallel for
 	for (int i = first_move[ply]; i < first_move[ply + 1]; i++) {
@@ -234,35 +236,45 @@ int search(int alpha, int beta, int depth) {
 	if (in_check(side)) {
 		Check = true;
 	}
+	bool cutoff = false;
 	generateMove(false);
-
-	
-	for (int i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+	int i = 0;
+	int next_ply = 0;
+  
+	for ( i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
 		bool legalMove = makeMove(gen_dat[i].movebyte);
-		if (!legalMove)
+		if (!legalMove || cutoff)
 			continue;
 		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth-1);
 		backMove();
-		if (score >= beta)
-			return beta; // cutoff
-		if (score > alpha) {
-			alpha = score;
 
-			pv[ply][ply] = gen_dat[i].movebyte;
-			// loop over the next ply
-// #pragma omp parallel for // 好像會變慢點
-			for (int next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
-				pv[ply][next_ply] = pv[ply + 1][next_ply];
+		{
+			
+
+			if (score > alpha && !cutoff) {
+				if (score >= beta)
+					cutoff = true;
+				else {
+					alpha = score;
+
+					pv[ply][ply] = gen_dat[i].movebyte;
+					// loop over the next ply
+					for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
+						pv[ply][next_ply] = pv[ply + 1][next_ply];
+					}
+					pv_length[ply] = pv_length[ply + 1];
+				}
+				
+
 			}
-			pv_length[ply] = pv_length[ply + 1];
-
 		}
-		
 	}
-	
+	if (cutoff) {
+		return beta;
+	}
 	if (NoLegalMove) {
 		if (Check)
 			return -49999 + ply;
@@ -279,6 +291,8 @@ int PVSsearch(int alpha, int beta, int depth) {
 
 	if (!depth)
 		return quiesceneceSearch(alpha, beta);
+
+
 	node++;
 
 	bool bSearchPv = true;
@@ -286,6 +300,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 	bool Check = false;
 	int score = 0;
 	bool cutoff = false;
+
 	pv_length[ply] = ply;
 	best_pv_length = 0;
 	int i, i0;
@@ -297,8 +312,8 @@ int PVSsearch(int alpha, int beta, int depth) {
 	//
 	//
 	//https://www.chessprogramming.org/Principal_Variation_Search
-	if (ply >= (32 - 1))
-		return EvaluateBoard(board);
+	//if (ply >= (32 - 1))
+	//	return EvaluateBoard(board);
 
 	if (in_check(side)) {
 		Check = true;
@@ -313,7 +328,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 		score = -PVSsearch(-beta, -alpha, depth - 1);
 		backMove();
 		if (score > alpha) {
-			if (score > beta)
+			if (score >= beta)
 				return beta;
 			alpha = score;
 
@@ -325,66 +340,51 @@ int PVSsearch(int alpha, int beta, int depth) {
 		i0++;
 		break;
 	}
-
+	
 	#pragma omp parallel for schedule(dynamic,1) copyin(board, \
 			side, xside, history, ep, castle, ply, hply, \
 			gen_dat, first_move, pv, pv_length) \
 			private(i, next_ply, score)
 	for (i = i0; i < first_move[ply + 1]; ++i) {
+
+		//cout << "threadsNums; " << omp_get_thread_num() << endl;
 		// sort move to make cutoff condition before
 		// sort()
 		bool legalMove = makeMove(gen_dat[i].movebyte);
 		if (!legalMove || cutoff) {
 			continue;
 		}
+		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth - 1);
-
-		//if (!legalMove || cutoff)
-		//	continue;
-		//NoLegalMove = false;
-		//if (bSearchPv) {
-		//	score = -PVSsearch(-beta, -alpha, depth - 1);
-		//}
-		//else {
-  //          // #pragma omp task
-		//	
-		//	score = -PVSsearch(-beta, -alpha, depth - 1);
-		//	if (score > alpha) {
-  // //             // #pragma omp task
-		//		score = -PVSsearch(-beta, -alpha, depth - 1);
-		//	}
-		//}
-
 		backMove();
 		#pragma omp critical
-		{
-			
+		
 			if (score > alpha && !cutoff) {
 				if (score >= beta)
 					cutoff = true;
 				else {
 					alpha = score;
-					bSearchPv = false;
+					//bSearchPv = false;
 
-
+					//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
 					best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
-					//pv[ply][ply] = gen_dat[i].movebyte;
-					// loop over the next ply
-					// #pragma omp parallel for // 好像會變慢點
 					for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
 						best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
 					}
+					
 					best_pv_length = pv_length[ply] = pv_length[ply + 1];
 				}
 			}
-		}
+		
 	}
 	if (best_pv_length > 0) {
+		printf("bestpvLength : %d\n", best_pv_length);
 		pv[ply][ply] = best_pv[ply];
 		for (next_ply = ply + 1; next_ply < best_pv_length; ++next_ply)
 			pv[ply][next_ply] = best_pv[next_ply];
 		pv_length[ply] = best_pv_length;
 	}
+
 	if (cutoff) {
 		return beta;
 	}
