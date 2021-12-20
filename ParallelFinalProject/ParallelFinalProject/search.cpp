@@ -21,7 +21,6 @@ extern __declspec(thread) int pv_length[32];
 
 
 
-
 void ReadBook() {
 	ifstream tempin;
 	tempin.open("book.txt");
@@ -155,11 +154,11 @@ int before_search( ) {
 	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
-	int depth = 5;
+	int depth = 6;
 	// for (int i = 5; i <= 5; ++i) { 
 
 	{
-		score = search(-99999, 99999, depth);
+		score = PVSsearch(-99999, 99999, depth);
 	}
 		// }
 
@@ -172,7 +171,6 @@ int before_search( ) {
 
 int quiesceneceSearch(int alpha, int beta) {
 	MoveByte bestMove;
-	bool cutoff = false;
 	int score = EvaluateBoard(board);
 	if (score > beta) return beta;
 	if (score > alpha) alpha = score;
@@ -180,7 +178,7 @@ int quiesceneceSearch(int alpha, int beta) {
 
 	if (node > 1023)
 		return score;
-
+	pv_length[ply] = ply;
 #pragma omp atomic
 	node++;
 // #pragma omp parallel for
@@ -189,6 +187,7 @@ int quiesceneceSearch(int alpha, int beta) {
 			continue;
 		score = -quiesceneceSearch(-beta, -alpha);
 		backMove();
+
 		if (score > alpha) {
 			// too good
 			if (score >= beta) {
@@ -217,6 +216,8 @@ int search(int alpha, int beta, int depth) {
 
 	if (!depth)
 		return quiesceneceSearch(alpha,  beta);
+
+#pragma omp atomic
 	node++;
 
 	bool NoLegalMove = true;
@@ -236,27 +237,24 @@ int search(int alpha, int beta, int depth) {
 	if (in_check(side)) {
 		Check = true;
 	}
-	bool cutoff = false;
 	generateMove(false);
 	int i = 0;
 	int next_ply = 0;
-  
 	for ( i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
-		bool legalMove = makeMove(gen_dat[i].movebyte);
-		if (!legalMove || cutoff)
+		//cout << "thread id : " << omp_get_thread_num() << ", cutoff : " << cutoff << endl;
+		if (!makeMove(gen_dat[i].movebyte))
 			continue;
 		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth-1);
 		backMove();
 
 		{
-			
 
-			if (score > alpha && !cutoff) {
+			if (score > alpha) {
 				if (score >= beta)
-					cutoff = true;
+					return beta;
 				else {
 					alpha = score;
 
@@ -272,9 +270,8 @@ int search(int alpha, int beta, int depth) {
 			}
 		}
 	}
-	if (cutoff) {
-		return beta;
-	}
+
+
 	if (NoLegalMove) {
 		if (Check)
 			return -49999 + ply;
@@ -291,7 +288,6 @@ int PVSsearch(int alpha, int beta, int depth) {
 
 	if (!depth)
 		return quiesceneceSearch(alpha, beta);
-
 
 	node++;
 
@@ -350,8 +346,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 		//cout << "threadsNums; " << omp_get_thread_num() << endl;
 		// sort move to make cutoff condition before
 		// sort()
-		bool legalMove = makeMove(gen_dat[i].movebyte);
-		if (!legalMove || cutoff) {
+		if (cutoff || !makeMove(gen_dat[i].movebyte)) {
 			continue;
 		}
 		NoLegalMove = false;
@@ -365,7 +360,8 @@ int PVSsearch(int alpha, int beta, int depth) {
 				else {
 					alpha = score;
 					//bSearchPv = false;
-
+					//cout << "better move " <<  convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+					//cout << "score " << score << endl;
 					//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
 					best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
 					for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
