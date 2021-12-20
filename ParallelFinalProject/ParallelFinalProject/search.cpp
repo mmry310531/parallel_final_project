@@ -150,11 +150,11 @@ int EvaluateBoard(int board_t[2][64]) {
 
 
 int before_search( ) {
-	omp_set_num_threads(8);
+	omp_set_num_threads(thread_num);
 	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
-	int depth = 6;
+	int depth = 7;
 	// for (int i = 5; i <= 5; ++i) { 
 
 	{

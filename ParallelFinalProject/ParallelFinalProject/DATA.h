@@ -120,7 +120,7 @@ extern int best_pv_length;
 
 
 extern int bestEval;
-
+extern int thread_num;
 
 extern bool AUTO;
 

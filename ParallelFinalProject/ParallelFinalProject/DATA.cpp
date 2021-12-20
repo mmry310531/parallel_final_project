@@ -14,9 +14,10 @@ __declspec(thread) int ply;
 __declspec(thread) int hply;
 __declspec(thread) int ep;
 __declspec(thread) char castle;
+
 MoveByte best_pv[32];
 int best_pv_length;
-
+int thread_num;
 
 MoveByte bestMove;
 int bestEval;

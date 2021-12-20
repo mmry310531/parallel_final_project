@@ -3,17 +3,18 @@
 #include "DATA.h"
 #include "board.h"
 #include "search.h"
+#include <time.h>
 #include <omp.h>
 using namespace std;
 
 
 int main()
 {
-	omp_set_num_threads(4);
+	omp_set_num_threads(8);
 	
 	MoveByte move;
 	char s[256];
-	int thread_num = 0;
+	thread_num = 8;
 	string s_computer = "";
 	int whichBook, temp_ply;
 	AUTO = true ;
@@ -41,11 +42,13 @@ int main()
 
 			 if (whichBook + 1)
 				 s_computer = getStep(whichBook, temp_ply).c_str();
-
-
+		
+			 clock_t startTime = 0;
 			 //if (whichBook + 1 == 0) {
 			 if (true) {
+				 startTime = clock();
 				 before_search();
+				 cout << "search time : " << clock() - startTime << endl;
 				 bool legalMove = makeMove(pv[0][0]);
 				 if (!legalMove) {
 					 AUTO = false;
