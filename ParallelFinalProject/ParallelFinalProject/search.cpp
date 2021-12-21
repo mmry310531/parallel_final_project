@@ -154,13 +154,14 @@ int before_search( ) {
 	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
-	int depth = 7;
+	int depth = 3;
 	// for (int i = 5; i <= 5; ++i) { 
 
 	{
 		score = PVSsearch(-99999, 99999, depth);
 	}
 		// }
+	totalNodes = node;
 
 
 	while (ply)
@@ -240,6 +241,7 @@ int search(int alpha, int beta, int depth) {
 	generateMove(false);
 	int i = 0;
 	int next_ply = 0;
+	
 	for ( i = first_move[ply]; i < first_move[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
 		// sort()
@@ -374,7 +376,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 		
 	}
 	if (best_pv_length > 0) {
-		printf("bestpvLength : %d\n", best_pv_length);
+		//printf("bestpvLength : %d\n", best_pv_length);
 		pv[ply][ply] = best_pv[ply];
 		for (next_ply = ply + 1; next_ply < best_pv_length; ++next_ply)
 			pv[ply][next_ply] = best_pv[next_ply];
@@ -394,3 +396,17 @@ int PVSsearch(int alpha, int beta, int depth) {
 
 
 }
+
+//void sort(int from) {
+//	int i;
+//	int bs;
+//	int bi;
+//	MoveByte move;
+//	bs = -1;
+//	bi = from;
+//	for (int i = from; i < first_move[ply + 1]; ++i)
+//		if (gen_dat[i].score > bs) {
+//			bs = move.sc
+//		}
+//	}
+//}

@@ -136,3 +136,4 @@ extern const int bishop_score[64];
 extern const int rook_score[64];
 extern const int king_score[64];
 extern const int flip[64];
+extern int totalNodes;

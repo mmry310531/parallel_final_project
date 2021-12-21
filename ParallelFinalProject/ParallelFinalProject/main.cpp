@@ -5,16 +5,18 @@
 #include "search.h"
 #include <time.h>
 #include <omp.h>
+#include <vector>
 using namespace std;
-
+vector<int> AllTotalnode;
+vector<clock_t> AllClock;
 
 int main()
 {
-	omp_set_num_threads(8);
-	
+	omp_set_num_threads(1);
+	totalNodes = 0;
 	MoveByte move;
 	char s[256];
-	thread_num = 8;
+	thread_num = 1;
 	string s_computer = "";
 	int whichBook, temp_ply;
 	AUTO = true ;
@@ -38,7 +40,7 @@ int main()
 			 else if (AUTO) whichBook = searchBook(s_computer, temp_ply);
 			 else whichBook = searchBook(s, temp_ply);
 
-			 cout << "whichBook: " << whichBook + 1 << endl;
+			 //cout << "whichBook: " << whichBook + 1 << endl;
 
 			 if (whichBook + 1)
 				 s_computer = getStep(whichBook, temp_ply).c_str();
@@ -46,9 +48,16 @@ int main()
 			 clock_t startTime = 0;
 			 //if (whichBook + 1 == 0) {
 			 if (true) {
+
 				 startTime = clock();
 				 before_search();
-				 cout << "search time : " << clock() - startTime << endl;
+				 clock_t endTime = clock() - startTime;
+				 cout << "search time : " << endTime << endl;
+				 cout << "total Nodes : " << node << endl;
+				 AllTotalnode.push_back(totalNodes);
+				 AllClock.push_back(endTime);
+
+
 				 bool legalMove = makeMove(pv[0][0]);
 				 if (!legalMove) {
 					 AUTO = false;
@@ -61,7 +70,10 @@ int main()
 				 }
 
 				 ply = 0;
+
+				 
 				 generateMove(false);
+				 
 				 board_print(board);
 				 //board_print_color(board);
 				 continue;
@@ -159,6 +171,26 @@ int main()
 		}
 
 	}
+
+	
+	//cout << "----------------Time-------------\n";
+	//for (int i = 0; i < AllClock.size(); i++) {
+	//	cout << AllClock[i] << endl;
+	//} // for
+	//cout << "\n----------------Total Nodes-------------\n";
+	//for (int i = 0; i < AllTotalnode.size(); i++) {
+	//	cout << AllTotalnode[i] << endl;
+	//} // for
+	if (AllTotalnode.size() == AllClock.size()) {
+		cout << "herllo " << endl;
+	}
+	float TimePerNodes_total = 0;
+	cout << "-----------avg hply per time-----\n";
+	for (int i = 0; i < AllTotalnode.size(); ++i) {
+		cout << "hply : " << i << "spend avg: " << (float)(AllTotalnode[i]) / (float)(AllClock[i]) << endl;
+		TimePerNodes_total += (float)(AllTotalnode[i]) / (float)(AllClock[i]);
+	}
+	cout << "total : " << TimePerNodes_total / AllTotalnode.size() << "\n"; // per ply
 
 	return 0;
 

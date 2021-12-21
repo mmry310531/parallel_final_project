@@ -1,3 +1,4 @@
 ﻿  main.cpp
 C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\Def.h(2,17): warning C4081: 必須是 '('，但卻找到 '常數'
+C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\ParallelFinalProject\main.cpp(189,20): warning C4018: '<': signed/unsigned 不相符
   ParallelFinalProject.vcxproj -> C:\Users\caichengen\Documents\GitHub\parallel_final_project\ParallelFinalProject\Debug\ParallelFinalProject.exe

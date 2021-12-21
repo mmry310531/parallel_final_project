@@ -25,7 +25,7 @@ int bestEval;
 bool AUTO;
 
 int node;
-
+int totalNodes;
 int move_offset[8] = { -8, 8, -1, 1, -9, 9, -7, 7 };
 int knight_jump[8] = { 15, 17, -17, -15, 10, -6, 6, -10 };
 
