@@ -154,11 +154,11 @@ int before_search( ) {
 	node = 0;
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
-	int depth = 3;
+	int depth = 5;
 	// for (int i = 5; i <= 5; ++i) { 
 
 	{
-		score = PVSsearch(-99999, 99999, depth);
+		score = NegaSearch(-99999, 99999, depth);
 	}
 		// }
 	totalNodes = node;
@@ -237,6 +237,7 @@ int search(int alpha, int beta, int depth) {
 		
 	if (in_check(side)) {
 		Check = true;
+		//depth++;
 	}
 	generateMove(false);
 	int i = 0;
@@ -257,6 +258,7 @@ int search(int alpha, int beta, int depth) {
 			if (score > alpha) {
 				if (score >= beta)
 					return beta;
+					
 				else {
 					alpha = score;
 
@@ -327,7 +329,11 @@ int PVSsearch(int alpha, int beta, int depth) {
 		backMove();
 		if (score > alpha) {
 			if (score >= beta)
+			{	
 				return beta;
+				//alpha = score;
+			}
+				
 			alpha = score;
 
 			best_pv[ply] = pv[ply][ply] = gen_dat[i0].movebyte;
@@ -354,7 +360,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth - 1);
 		backMove();
-		#pragma omp critical
+		//#pragma omp critical
 		
 			if (score > alpha && !cutoff) {
 				if (score >= beta)
@@ -374,6 +380,97 @@ int PVSsearch(int alpha, int beta, int depth) {
 				}
 			}
 		
+	}
+	if (best_pv_length > 0) {
+		//printf("bestpvLength : %d\n", best_pv_length);
+		pv[ply][ply] = best_pv[ply];
+		for (next_ply = ply + 1; next_ply < best_pv_length; ++next_ply)
+			pv[ply][next_ply] = best_pv[next_ply];
+		pv_length[ply] = best_pv_length;
+	}
+
+	if (cutoff) {
+		return beta;
+	}
+	if (NoLegalMove) {
+		if (Check)
+			return -49999 + ply;
+		else
+			return 0;
+	}
+	return alpha;
+
+
+}
+
+int NegaSearch(int alpha, int beta, int depth) {
+
+	if (!depth)
+		return quiesceneceSearch(alpha, beta);
+
+	node++;
+
+	bool bSearchPv = true;
+	bool NoLegalMove = true;
+	bool Check = false;
+	int score = 0;
+	bool cutoff = false;
+
+	pv_length[ply] = ply;
+	best_pv_length = 0;
+	int i, i0;
+	int next_ply;
+	//	draw
+	// if(hply != 0){
+	//		if(three times same board){
+	//			return 0
+	//
+	//
+	//https://www.chessprogramming.org/Principal_Variation_Search
+	//if (ply >= (32 - 1))
+	//	return EvaluateBoard(board);
+
+	if (in_check(side)) {
+		Check = true;
+	}
+
+	generateMove(false);
+
+#pragma omp parallel for schedule(dynamic,1) copyin(board, \
+			side, xside, history, ep, castle, ply, hply, \
+			gen_dat, first_move, pv, pv_length) \
+			private(i, next_ply, score)
+	for (i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+
+		//cout << "threadsNums; " << omp_get_thread_num() << endl;
+		// sort move to make cutoff condition before
+		// sort()
+		if (cutoff || !makeMove(gen_dat[i].movebyte)) {
+			continue;
+		}
+		NoLegalMove = false;
+		score = -search(-beta, -alpha, depth - 1);
+		backMove();
+		//#pragma omp critical
+
+		if (score > alpha && !cutoff) {
+			if (score >= beta)
+				cutoff = true;
+			else {
+				alpha = score;
+				//bSearchPv = false;
+				//cout << "better move " <<  convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+				//cout << "score " << score << endl;
+				//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+				best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
+				for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
+					best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
+				}
+
+				best_pv_length = pv_length[ply] = pv_length[ply + 1];
+			}
+		}
+
 	}
 	if (best_pv_length > 0) {
 		//printf("bestpvLength : %d\n", best_pv_length);

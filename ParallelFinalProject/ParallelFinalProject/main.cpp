@@ -16,7 +16,7 @@ int main()
 	totalNodes = 0;
 	MoveByte move;
 	char s[256];
-	thread_num = 1;
+	thread_num = 8;
 	string s_computer = "";
 	int whichBook, temp_ply;
 	AUTO = true ;
@@ -68,6 +68,9 @@ int main()
 				 else {
 					 cout << convertIndex2Readible(pv[0][0].from) << ", " << convertIndex2Readible(pv[0][0].to) << endl;
 				 }
+
+				 cout << "hply :  " << hply << endl;
+				 if (hply == 20) break;
 
 				 ply = 0;
 
@@ -184,14 +187,23 @@ int main()
 	if (AllTotalnode.size() == AllClock.size()) {
 		cout << "herllo " << endl;
 	}
-	float TimePerNodes_total = 0;
+	double TimePerNodes_total = 0;
+	int totalNODEs = 0;
+	clock_t clock= 0;
+	cout << clock << endl;
 	cout << "-----------avg hply per time-----\n";
-	for (int i = 0; i < AllTotalnode.size(); ++i) {
-		cout << "hply : " << i << "spend avg: " << (float)(AllTotalnode[i]) / (float)(AllClock[i]) << endl;
-		TimePerNodes_total += (float)(AllTotalnode[i]) / (float)(AllClock[i]);
+	for (int i = 0; i < AllTotalnode.size()-1; ++i) {
+		cout << "hply : " << i << "spend avg: " << (double)(AllTotalnode[i]) / (double)(AllClock[i]) << endl;
+		cout << "finds nodes :" << (AllTotalnode[i]) << endl;
+		cout << "spend time " << AllClock[i] << endl;
+		totalNODEs += (AllTotalnode[i]);
+		clock += (AllClock[i]);
+		TimePerNodes_total += (double)(AllTotalnode[i]) / (double)(AllClock[i]);
 	}
-	cout << "total : " << TimePerNodes_total / AllTotalnode.size() << "\n"; // per ply
-
+	cout << "total : " << TimePerNodes_total / (AllTotalnode.size()-1) << "\n"; // per ply
+	cout << "total nodes: " << totalNODEs << endl;
+	cout << "total time: " << clock << endl;
+	cout << "test: " << (double)totalNODEs / (double)clock << endl;
 	return 0;
 
 

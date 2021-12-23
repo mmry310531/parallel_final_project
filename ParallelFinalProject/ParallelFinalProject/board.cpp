@@ -293,6 +293,7 @@ void generateMove(bool search)
 	//board_print(board);
 	first_move[ply + 1] = first_move[ply];
 	PreComputeMove();
+
 	for (int square = 0; square < 64; ++square) {
 		if (board[BColor][square] == side) {
 			// handle queen | rook | bishop
