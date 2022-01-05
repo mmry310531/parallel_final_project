@@ -10,6 +10,8 @@ int quiesceneceSearch(int alpha, int beta);
 int search(int alpha, int beta, int depth);
 int PVSsearch(int alpha, int beta, int depth);
 int NegaSearch(int alpha, int beta, int depth);
+int NegaSearch__(int alpha, int beta, int depth);
+void sort(int i);
 
 void ReadBook();
 int searchBook(string s, int index);

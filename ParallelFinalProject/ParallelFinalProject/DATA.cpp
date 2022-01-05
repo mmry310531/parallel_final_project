@@ -4,8 +4,8 @@
 
 __declspec(thread) int board[2][64];
 __declspec(thread) Hist_t history[1024];
-__declspec(thread) MoveByte_set gen_dat[4096];
-__declspec(thread) int first_move[32];
+__declspec(thread) MoveByte_set MoveSet[4096];
+__declspec(thread) int branchNodes[32];
 __declspec(thread) MoveByte pv[32][32];
 __declspec(thread) int pv_length[32];
 __declspec(thread) int side;

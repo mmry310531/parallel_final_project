@@ -43,9 +43,9 @@
 //	f = FALSE;
 //
 //	/* loop through the moves */
-//	for (i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+//	for (i = branchNodes[ply]; i < branchNodes[ply + 1]; ++i) {
 //		sort(i);
-//		if (!makemove(gen_dat[i].m.b))
+//		if (!makemove(MoveSet[i].m.b))
 //			continue;
 //		f = TRUE;
 //		x = -search(-beta, -alpha, depth - 1);
@@ -57,13 +57,13 @@
 //			/* this move caused a cutoff, so increase the history
 //			   value so it gets ordered high next time we can
 //			   search it */
-//			history[(int)gen_dat[i].m.b.from][(int)gen_dat[i].m.b.to] += depth;
+//			history[(int)MoveSet[i].m.b.from][(int)MoveSet[i].m.b.to] += depth;
 //			if (x >= beta)
 //				return beta;
 //			alpha = x;
 //
 //			/* update the PV */
-//			pv[ply][ply] = gen_dat[i].m;
+//			pv[ply][ply] = MoveSet[i].m;
 //			for (j = ply + 1; j < pv_length[ply + 1]; ++j)
 //				pv[ply][j] = pv[ply + 1][j];
 //			pv_length[ply] = pv_length[ply + 1];

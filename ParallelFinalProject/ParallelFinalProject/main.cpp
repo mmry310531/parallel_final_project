@@ -16,7 +16,7 @@ int main()
 	totalNodes = 0;
 	MoveByte move;
 	char s[256];
-	thread_num = 8;
+	thread_num = 4;
 	string s_computer = "";
 	int whichBook, temp_ply;
 	AUTO = true ;
@@ -70,7 +70,7 @@ int main()
 				 }
 
 				 cout << "hply :  " << hply << endl;
-				 if (hply == 20) break;
+				 if (hply == 30) break;
 
 				 ply = 0;
 
@@ -192,7 +192,7 @@ int main()
 	clock_t clock= 0;
 	cout << clock << endl;
 	cout << "-----------avg hply per time-----\n";
-	for (int i = 0; i < AllTotalnode.size()-1; ++i) {
+	for (int i = 0; i < AllTotalnode.size(); ++i) {
 		cout << "hply : " << i << "spend avg: " << (double)(AllTotalnode[i]) / (double)(AllClock[i]) << endl;
 		cout << "finds nodes :" << (AllTotalnode[i]) << endl;
 		cout << "spend time " << AllClock[i] << endl;

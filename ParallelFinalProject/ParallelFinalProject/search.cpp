@@ -13,8 +13,8 @@ extern __declspec(thread) int board[2][64];
 extern __declspec(thread) Hist_t history[1024];
 extern __declspec(thread) int side, xside, ep, ply, hply;
 extern __declspec(thread) char castle;
-extern __declspec(thread) MoveByte_set gen_dat[4096];
-extern __declspec(thread) int first_move[32];
+extern __declspec(thread) MoveByte_set MoveSet[4096];
+extern __declspec(thread) int branchNodes[32];
 extern __declspec(thread) MoveByte pv[32][32];
 extern __declspec(thread) int pv_length[32];
 
@@ -155,12 +155,8 @@ int before_search( ) {
 	int score = 0;
 	memset(pv, 0, sizeof(pv));
 	int depth = 5;
-	// for (int i = 5; i <= 5; ++i) { 
+	score = PVSsearch(-99999, 99999, depth);
 
-	{
-		score = NegaSearch(-99999, 99999, depth);
-	}
-		// }
 	totalNodes = node;
 
 
@@ -177,14 +173,15 @@ int quiesceneceSearch(int alpha, int beta) {
 	if (score > alpha) alpha = score;
 	generateMove(true);
 
-	if (node > 1023)
+	if (node > 2048)
 		return score;
 	pv_length[ply] = ply;
 #pragma omp atomic
 	node++;
 // #pragma omp parallel for
-	for (int i = first_move[ply]; i < first_move[ply + 1]; i++) {
-		if (!makeMove(gen_dat[i].movebyte))
+	for (int i = branchNodes[ply]; i < branchNodes[ply + 1]; i++) {
+		sort(i);
+		if (!makeMove(MoveSet[i].movebyte))
 			continue;
 		score = -quiesceneceSearch(-beta, -alpha);
 		backMove();
@@ -197,7 +194,7 @@ int quiesceneceSearch(int alpha, int beta) {
 			else {
 				alpha = score;
 				// write pv move
-				pv[ply][ply] = gen_dat[i].movebyte;
+				pv[ply][ply] = MoveSet[i].movebyte;
 				// loop over the next ply
 				for (int next_ply = ply + 1; next_ply < pv_length[ply+1]; next_ply++) {
 					pv[ply][next_ply] = pv[ply + 1][next_ply];
@@ -218,7 +215,7 @@ int search(int alpha, int beta, int depth) {
 	if (!depth)
 		return quiesceneceSearch(alpha,  beta);
 
-#pragma omp atomic
+//#pragma omp atomic
 	node++;
 
 	bool NoLegalMove = true;
@@ -232,7 +229,7 @@ int search(int alpha, int beta, int depth) {
 	//
 	//
 
-	if (ply >= (32 - 1))
+	if (ply >= (16 - 1))
 		return EvaluateBoard(board);
 		
 	if (in_check(side)) {
@@ -243,11 +240,11 @@ int search(int alpha, int beta, int depth) {
 	int i = 0;
 	int next_ply = 0;
 	
-	for ( i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+	for ( i = branchNodes[ply]; i < branchNodes[ply + 1]; ++i) {
 		// sort move to make cutoff condition before
-		// sort()
+		sort(i);
 		//cout << "thread id : " << omp_get_thread_num() << ", cutoff : " << cutoff << endl;
-		if (!makeMove(gen_dat[i].movebyte))
+		if (!makeMove(MoveSet[i].movebyte))
 			continue;
 		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth-1);
@@ -262,7 +259,7 @@ int search(int alpha, int beta, int depth) {
 				else {
 					alpha = score;
 
-					pv[ply][ply] = gen_dat[i].movebyte;
+					pv[ply][ply] = MoveSet[i].movebyte;
 					// loop over the next ply
 					for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
 						pv[ply][next_ply] = pv[ply + 1][next_ply];
@@ -303,7 +300,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 
 	pv_length[ply] = ply;
 	best_pv_length = 0;
-	int i, i0;
+	int i, i_;
 	int next_ply;
 	//	draw
 	// if(hply != 0){
@@ -321,8 +318,9 @@ int PVSsearch(int alpha, int beta, int depth) {
 	
 	generateMove(false);
 
-	for (i0 = first_move[ply]; i0 < first_move[ply + 1]; ++i0) {
-		if (!makeMove(gen_dat[i0].movebyte))
+	for (i_ = branchNodes[ply]; i_ < branchNodes[ply + 1]; ++i_) {
+		sort(i_);
+		if (!makeMove(MoveSet[i_].movebyte))
 			continue;
 		NoLegalMove = false;
 		score = -PVSsearch(-beta, -alpha, depth - 1);
@@ -336,31 +334,29 @@ int PVSsearch(int alpha, int beta, int depth) {
 				
 			alpha = score;
 
-			best_pv[ply] = pv[ply][ply] = gen_dat[i0].movebyte;
+			best_pv[ply] = pv[ply][ply] = MoveSet[i_].movebyte;
 			for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; ++next_ply)
 				best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
 			best_pv_length = pv_length[ply] = pv_length[ply + 1];
 		}
-		i0++;
+		i_++;
 		break;
 	}
-	
-	#pragma omp parallel for schedule(dynamic,1) copyin(board, \
-			side, xside, history, ep, castle, ply, hply, \
-			gen_dat, first_move, pv, pv_length) \
-			private(i, next_ply, score)
-	for (i = i0; i < first_move[ply + 1]; ++i) {
+	for (i = i_; i < branchNodes[ply + 1]; ++i)
+		sort(i);
+	#pragma omp parallel for schedule(dynamic,1) copyin(board, side, xside, history, ep, castle, ply, hply,MoveSet, branchNodes, pv, pv_length) private(i, next_ply, score)
+	for (i = i_; i < branchNodes[ply + 1]; ++i) {
 
 		//cout << "threadsNums; " << omp_get_thread_num() << endl;
 		// sort move to make cutoff condition before
 		// sort()
-		if (cutoff || !makeMove(gen_dat[i].movebyte)) {
+		if (cutoff || !makeMove(MoveSet[i].movebyte)) {
 			continue;
 		}
 		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth - 1);
 		backMove();
-		//#pragma omp critical
+		#pragma omp critical
 		
 			if (score > alpha && !cutoff) {
 				if (score >= beta)
@@ -368,10 +364,10 @@ int PVSsearch(int alpha, int beta, int depth) {
 				else {
 					alpha = score;
 					//bSearchPv = false;
-					//cout << "better move " <<  convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+					//cout << "better move " <<  convertIndex2Readible(MoveSet[i].movebyte.from) << ", " << convertIndex2Readible(MoveSet[i].movebyte.to) << endl;
 					//cout << "score " << score << endl;
-					//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
-					best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
+					//cout << convertIndex2Readible(MoveSet[i].movebyte.from) << ", " << convertIndex2Readible(MoveSet[i].movebyte.to) << endl;
+					best_pv[ply] = pv[ply][ply] = MoveSet[i].movebyte;
 					for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
 						best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
 					}
@@ -394,7 +390,7 @@ int PVSsearch(int alpha, int beta, int depth) {
 	}
 	if (NoLegalMove) {
 		if (Check)
-			return -49999 + ply;
+			return -99999;
 		else
 			return 0;
 	}
@@ -435,23 +431,21 @@ int NegaSearch(int alpha, int beta, int depth) {
 	}
 
 	generateMove(false);
-
-#pragma omp parallel for schedule(dynamic,1) copyin(board, \
-			side, xside, history, ep, castle, ply, hply, \
-			gen_dat, first_move, pv, pv_length) \
-			private(i, next_ply, score)
-	for (i = first_move[ply]; i < first_move[ply + 1]; ++i) {
+	for (i = branchNodes[ply]; i < branchNodes[ply + 1]; ++i)
+		sort(i);
+#pragma omp parallel for schedule(dynamic,1) copyin(board,side, xside, history, ep, castle, ply, hply, MoveSet, branchNodes, pv, pv_length) private(i, next_ply, score)
+	for (i = branchNodes[ply]; i < branchNodes[ply + 1]; ++i) {
 
 		//cout << "threadsNums; " << omp_get_thread_num() << endl;
 		// sort move to make cutoff condition before
-		// sort()
-		if (cutoff || !makeMove(gen_dat[i].movebyte)) {
+		//sort(i);
+		if (cutoff || !makeMove(MoveSet[i].movebyte)) {
 			continue;
 		}
 		NoLegalMove = false;
 		score = -search(-beta, -alpha, depth - 1);
 		backMove();
-		//#pragma omp critical
+		#pragma omp critical
 
 		if (score > alpha && !cutoff) {
 			if (score >= beta)
@@ -459,10 +453,10 @@ int NegaSearch(int alpha, int beta, int depth) {
 			else {
 				alpha = score;
 				//bSearchPv = false;
-				//cout << "better move " <<  convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+				//cout << "better move " <<  convertIndex2Readible(MoveSet[i].movebyte.from) << ", " << convertIndex2Readible(MoveSet[i].movebyte.to) << endl;
 				//cout << "score " << score << endl;
-				//cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
-				best_pv[ply] = pv[ply][ply] = gen_dat[i].movebyte;
+				//cout << convertIndex2Readible(MoveSet[i].movebyte.from) << ", " << convertIndex2Readible(MoveSet[i].movebyte.to) << endl;
+				best_pv[ply] = pv[ply][ply] = MoveSet[i].movebyte;
 				for (next_ply = ply + 1; next_ply < pv_length[ply + 1]; next_ply++) {
 					best_pv[next_ply] = pv[ply][next_ply] = pv[ply + 1][next_ply];
 				}
@@ -494,16 +488,21 @@ int NegaSearch(int alpha, int beta, int depth) {
 
 }
 
-//void sort(int from) {
-//	int i;
-//	int bs;
-//	int bi;
-//	MoveByte move;
-//	bs = -1;
-//	bi = from;
-//	for (int i = from; i < first_move[ply + 1]; ++i)
-//		if (gen_dat[i].score > bs) {
-//			bs = move.sc
-//		}
-//	}
-//}
+void sort(int from) {
+	int i;
+	int bestScore;
+	int bestIndex;
+	MoveByte move;
+	bestScore = -1;
+	bestIndex = from;
+	for (int i = from; i < branchNodes[ply + 1]; ++i){
+		if (MoveSet[i].score > bestScore) {
+			bestScore = MoveSet[i].score;
+			bestIndex = i;
+		}
+	}
+	move = MoveSet[from].movebyte;
+	MoveSet[from] = MoveSet[bestIndex];
+	MoveSet[bestIndex].movebyte = move;
+	
+}

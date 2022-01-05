@@ -6,8 +6,8 @@ extern __declspec(thread) int board[2][64];
 extern __declspec(thread) Hist_t history[1024];
 extern __declspec(thread) int side, xside, ep, ply, hply;
 extern __declspec(thread) char castle;
-extern __declspec(thread) MoveByte_set gen_dat[4096];
-extern __declspec(thread) int first_move[32];
+extern __declspec(thread) MoveByte_set MoveSet[4096];
+extern __declspec(thread) int branchNodes[32];
 extern __declspec(thread) MoveByte pv[32][32];
 extern __declspec(thread) int pv_length[32];
 
@@ -137,23 +137,23 @@ MoveByte ReadMove(string s) {
 			}
 		}
 		// for debug
-		//for (int i = 0; i < first_move[1]; ++i) {
-		//	cout << convertIndex2Readible(gen_dat[i].movebyte.from) << ", " << convertIndex2Readible(gen_dat[i].movebyte.to) << endl;
+		//for (int i = 0; i < branchNodes[1]; ++i) {
+		//	cout << convertIndex2Readible(MoveSet[i].movebyte.from) << ", " << convertIndex2Readible(MoveSet[i].movebyte.to) << endl;
 		//}
-		//cout << "first Move Num " << first_move[1] << endl;
-		// for (int i = 0; i < first_move[1]; ++i) {
+		//cout << "first Move Num " << branchNodes[1] << endl;
+		// for (int i = 0; i < branchNodes[1]; ++i) {
 		// 	cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
 		// }
-		//cout << "first Move Num " << first_move[1] << endl;
-		for (int i = 0; i < first_move[1]; ++i) {
+		//cout << "first Move Num " << branchNodes[1] << endl;
+		for (int i = 0; i < branchNodes[1]; ++i) {
 			// cout << convertIndex2Readible(from) << ", " << convertIndex2Readible(to) << endl;
-			if (gen_dat[i].movebyte.from == from && gen_dat[i].movebyte.to == to) {
+			if (MoveSet[i].movebyte.from == from && MoveSet[i].movebyte.to == to) {
 
 				mb.from = from;
 				mb.to = to;
 				mb.promote = promote;
-				mb.castle = gen_dat[i].movebyte.castle;
-				mb.en_capture = gen_dat[i].movebyte.en_capture;
+				mb.castle = MoveSet[i].movebyte.castle;
+				mb.en_capture = MoveSet[i].movebyte.en_capture;
 				mb.legal = 1;
 				mb.pawn2 = false;
 
@@ -291,7 +291,7 @@ void generateMove(bool search)
 {
 	//cout << "side " << side << "ply : " << ply << endl;
 	//board_print(board);
-	first_move[ply + 1] = first_move[ply];
+	branchNodes[ply + 1] = branchNodes[ply];
 	PreComputeMove();
 
 	for (int square = 0; square < 64; ++square) {
@@ -395,19 +395,19 @@ void generateMove(bool search)
 				else {
 					// right
 					if (castle & 4) {
-						//if(attack ( F7, G7) continue
+						//if(attack ( F8, G8) continue
 						//else
-						if (board[BColor][F7] == NONE && board[BColor][G7] == NONE) {
-							push_moveable_piece(search, square, G7, false, 4, false, false, false, false);
+						if (board[BColor][F8] == NONE && board[BColor][G8] == NONE) {
+							push_moveable_piece(search, square, G8, false, 4, false, false, false, false);
 						}
 					}
 					// left
 					if (castle & 8) {
 
-						//if(attack ( C7, D7) continue
+						//if(attack ( C8, D8) continue
 						//else
-						if (board[BColor][C7] == NONE && board[BColor][D7] == NONE) {
-							push_moveable_piece(search, square, C7, false, 8, false, false, false, false);
+						if (board[BColor][C8] == NONE && board[BColor][D8] == NONE) {
+							push_moveable_piece(search, square, C8, false, 8, false, false, false, false);
 						}
 					}
 				}
@@ -482,13 +482,13 @@ void push_moveable_piece(bool search, int from, int to, int promote, int castle,
 		// white pawn move to promote
 		if (to < 8 && pawn) {
 			for (int i = 0; i < 4; i++) {
-				MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+				MoveByte_set* g = &MoveSet[branchNodes[ply + 1]++];
 				g->movebyte.from = from;
 				g->movebyte.to = to;
 				g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
 				g->movebyte.legal = true;
-				g->score = 0;
-				g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+				
+				g->score = 1000000 + i * 10;
 				// update board
 			} // for
 
@@ -500,13 +500,13 @@ void push_moveable_piece(bool search, int from, int to, int promote, int castle,
 	//if (search) {
 		if (to >= 56 && pawn) {
 			for (int i = 0; i < 4; i++) {
-				MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+				MoveByte_set* g = &MoveSet[branchNodes[ply + 1]++];
 				g->movebyte.from = from;
 				g->movebyte.to = to;
 				g->movebyte.promote = i + 2; // QUEEN 2 BISHOP 3 KNIGHT 4 ROOK 5
 				g->movebyte.legal = true;
 				g->score = 0;
-				g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
+				g->score = 1000000 + i * 10;
 				// update board
 			} // for
 
@@ -516,24 +516,34 @@ void push_moveable_piece(bool search, int from, int to, int promote, int castle,
 
 	if (search) {
 		if (capture == true) {
-			MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+			MoveByte_set* g = &MoveSet[branchNodes[ply + 1]++];
 			g->movebyte.from = from;
 			g->movebyte.to = to;
 			g->movebyte.castle = castle;
 			g->movebyte.promote = NONE;
 			g->movebyte.legal = true;
-			g->score = 0;
+			if (capture || en_capture) {
+				g->score = 100000 + (board[BPiece][to] * 10) - (board[BPiece][from]);
+			}
+			else {
+				g->score = 0;
+			}
 			g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
 		}
 	}
 	else {
-		MoveByte_set* g = &gen_dat[first_move[ply + 1]++];
+		MoveByte_set* g = &MoveSet[branchNodes[ply + 1]++];
 		g->movebyte.from = from;
 		g->movebyte.to = to;
 		g->movebyte.castle = castle;
 		g->movebyte.promote = NONE;
 		g->movebyte.legal = true;
-		g->score = 0;
+		if (capture || en_capture) {
+			g->score = 100000 + (board[BPiece][to] * 10) - (board[BPiece][from]);
+		}
+		else {
+			g->score = 0;
+		}
 		g->score = 1000000 + (board[BPiece][to] * 10) - board[BPiece][from];
 	}
 	
